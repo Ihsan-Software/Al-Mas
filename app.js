@@ -23,7 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'uploads')));
 if (process.env.NODE_ENV === 'development') {
-  console.log('development mode')
     app.use(morgan('dev'));
 }
 
