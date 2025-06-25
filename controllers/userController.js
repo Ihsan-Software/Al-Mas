@@ -10,6 +10,7 @@ const createToken = require("../utils/createToken");
 
 // for image
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+const deleteOldImage  = require("../middlewares/deleteOldImage");
 
 // use buffer from Memory Storage
 exports.resizeImage = asyncHandler(async (req, res, next) => {
@@ -30,30 +31,31 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 
 // Execute multer middleware
 exports.uploadUserImage = uploadSingleImage("image");
+exports.deleteOldUserImage = deleteOldImage(User, 'image', 'users');
 
 //  **** Admin CRUD ****
 
 // @desc    Get list of users
-// @route   GET /api/v1/users
+// @route   GET /users
 // @access  Private/ Admin
 exports.getUsers = factory.getAll(User);
 
 // @desc    Get specific user by id
-// @route   GET /api/v1/users/:id
+// @route   GET /users/:id
 // @access  Private/ Admin
 exports.getUser = factory.getOne(User);
 
 // @desc    Create user
-// @route   POST  /api/v1/users
+// @route   POST  /users
 // @access  Private/ Admin
 exports.createUser = factory.createOne(User);
 
 // @desc    Update specific user
-// @route   PUT /api/v1/users/:id
+// @route   PUT /users/:id
 // @access  Private/ Admin
 exports.updateUser = factory.updateOne(User)
 // @desc    Delete specific user
-// @route   DELETE /api/v1/users/:id
+// @route   DELETE /users/:id
 // @access  Private/ Admin
 exports.deleteUser = factory.deleteOne(User);
 
@@ -61,7 +63,7 @@ exports.deleteUser = factory.deleteOne(User);
 // **** User CRUD ****
 
 // @desc    Get Logged user data
-// @route   GET /api/v1/users/getMe
+// @route   GET /users/getMe
 // @access  Private/Protect
 exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
     req.params.id = req.user._id;
@@ -70,7 +72,7 @@ exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
 
 
 // @desc    Update logged user password
-// @route   PUT /api/v1/users/updateMyPassword
+// @route   PUT /users/updateMyPassword
 // @access  Private/Protect
 exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
   // 1) Update user password based user payload (req.user._id)
@@ -92,7 +94,7 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
 
 
 // @desc    Update logged user data (without password, role)
-// @route   PUT /api/v1/users/updateMe
+// @route   PUT /users/updateMe
 // @access  Private/Protect
 exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
@@ -110,7 +112,7 @@ exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Deactivate logged user
-// @route   DELETE /api/v1/users/deleteMe
+// @route   DELETE /users/deleteMe
 // @access  Private/Protect
 exports.deleteLoggedUserData = asyncHandler(async (req, res, next) => {
     await User.findByIdAndDelete(req.user._id);
