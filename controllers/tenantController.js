@@ -18,9 +18,9 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         const personalImageFileName = `tenant-${uuidv4()}-${Date.now()}-personalImage.jpeg`;
 
         await sharp(req.files.personalImage[0].buffer)
-        .resize(2000, 1333)
+        .resize(600, 600)
         .toFormat("jpeg")
-        .jpeg({ quality: 95 })
+        .jpeg({ quality: 90 })
         .toFile(`uploads/tenant/${personalImageFileName}`);
 
         // Save image into our db
