@@ -13,20 +13,20 @@ const deleteOldImage = (Model, imageField, uploadFolder) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     // Skip if no new file uploaded
-    if (Model =='User' && !req.file) {
+    if ((Model =='User' && !req.file) ) {
       return next();
-    }else if(Model =='Tenant' && !req.files){
+    }else if(Model =='Car' && !req.file){
+       return next();
+    }
+    else if(Model =='Tenant' && !req.files){
        return next();
     }
 
     const doc = await Model.findById(id);
-
-
     if (!doc) {
       return next(new ApiError(`No document found for this ID: ${id}`, 404));
     }
     let oldImage = doc[imageField];
-
     oldImage = oldImage.replace(`${process.env.BASE_URL}/${uploadFolder}`, "");
 
     if (oldImage) {

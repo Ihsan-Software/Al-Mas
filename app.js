@@ -15,6 +15,7 @@ const globalError = require('./middlewares/errorMiddleware')
 const userRouter = require("./routes/userRoute");
 const authRouter = require("./routes/authRoute");
 const tenantRouter = require("./routes/tenantRoute");
+const carRouter = require("./routes/carRoute");
 
 const app = express();
 
@@ -90,6 +91,7 @@ app.get("/", (req, res) => {
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/tenant', tenantRouter);
+app.use('/car', carRouter);
 
 app.all('/*splat', (req, res, next) => {
   next(new ApiError(`can't find this route: ${req.originalUrl}`, 400));
