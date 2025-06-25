@@ -23,6 +23,7 @@ const {
   updateLoggedUserPassword,
   updateLoggedUserData,
   deleteLoggedUserData,
+  deleteOldUserImage
 } = require("../controllers/userController");
 
 const auth = require("../controllers/authController");
@@ -47,7 +48,7 @@ router.route("/")
 router
   .route("/:id")
   .get(getUserValidator, getUser)
-  .patch(uploadUserImage, resizeImage, updateUserValidator, updateUser)
+  .patch(uploadUserImage, deleteOldUserImage, resizeImage, updateUserValidator, updateUser)
   .delete(deleteUserValidator, deleteUser);
 
 module.exports = router;
