@@ -101,14 +101,14 @@ exports.getContractValidator = [
 ];
 
 exports.updateContractValidator = [
-  check("tenant")
+  check("tenantID")
     .optional()
     .notEmpty()
     .withMessage("tenant id  required")
     .isMongoId()
     .withMessage('Invalid tenant ID formate'),
 
-  check("car")
+  check("carID")
     .optional()
     .notEmpty()
     .withMessage("car id  required")

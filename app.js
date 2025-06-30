@@ -2,10 +2,6 @@ const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 
-/* For pdf File*/
-const ejs = require('ejs');
-const puppeteer = require('puppeteer-core'); // puppeteer-core doesn't include Chromium
-
 
 // utils requires
 
@@ -17,6 +13,7 @@ const authRouter = require("./routes/authRoute");
 const tenantRouter = require("./routes/tenantRoute");
 const carRouter = require("./routes/carRoute");
 const contractRouter = require("./routes/contractRoute");
+const bookingRouter = require("./routes/bookingRoute");
 
 const app = express();
 
@@ -39,6 +36,7 @@ app.use('/users', userRouter);
 app.use('/tenant', tenantRouter);
 app.use('/car', carRouter);
 app.use('/contract', contractRouter);
+app.use('/booking', bookingRouter);
 
 app.all('/*splat', (req, res, next) => {
   next(new ApiError(`can't find this route: ${req.originalUrl}`, 400));

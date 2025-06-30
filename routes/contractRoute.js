@@ -25,18 +25,18 @@ const auth = require("../controllers/authController");
 const router = express.Router();
 
 // FOR ADMIN
-router.route("/createPDF/:id")
-  .get(createPdfFile)
 router.use(auth.protect);
 router.use(auth.allowedTo("admin"));
 
 router.route("/")
-  .get(getContracts)
-  .post(createContractValidator, createContract);
+.get(getContracts)
+.post(createContractValidator, createContract);
 
 router.route("/search")
-  .get(getContractUseNameValidator, getContractUseName)
+.get(getContractUseNameValidator, getContractUseName)
 
+router.route("/createPDF/:id")
+  .get(createPdfFile)
 
 
 router
