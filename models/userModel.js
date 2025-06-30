@@ -42,11 +42,10 @@ userSchema.pre("save", async function (next) {
 });
 
 const setImageURL = (doc) => {
-  if (doc.image) {
-    const imageUrl = `${process.env.BASE_URL}/users/${doc.image}`;
-    doc.image = imageUrl;
-  }
-
+    if (doc.image && !doc.image.includes(`${process.env.BASE_URL}`)) {
+        const imageUrl = `${process.env.BASE_URL}/users/${doc.image}`;
+        doc.image = imageUrl;
+    }
 };
 // findOne, findAll and update
 userSchema.post('init', (doc) => {

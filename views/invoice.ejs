@@ -103,19 +103,19 @@
       <thead><tr></tr></thead>
       <tbody>
         <tr>
-          <td colspan="1" style="text-align: left;"><p>NO:000107</p></td>
+          <td colspan="1" style="text-align: left;"><p>NO: <%= contract.contractNumber %></p></td>
         </tr>
         <tr>
-          <td colspan="1" style="text-align: left;">2025/06/22</td>
+          <td colspan="1" style="text-align: left;"><%= contract.contractDate %></td>
         </tr>
         <tr>
-          <td colspan="1"><p>استلمت من السيد/ة(Received from Mr./Ms.):  مصعب باسم محمدعلي</p></td>
+          <td colspan="1"><p>استلمت من السيد/ة(Received from Mr./Ms.): <%= contract.tenantID.name %></p></td>
         </tr>
         <tr>
-          <td colspan="1"><p>مبلغ قدره(Amount of): 125000 دينار عراقي</p></td>
+          <td colspan="1"><p>مبلغ قدره(Amount of): <%= contract.pricePaid %> دينار عراقي</p></td>
         </tr>
         <tr>
-          <td colspan="1"><p>وذالك عن ايجار مركبة(This is for renting a vehicle) (هيونداي توكسن استيشن) المرقمة (22H9167)</p></td>
+          <td colspan="1"><p>وذالك عن ايجار مركبة(This is for renting a vehicle) ( <%= contract.carID.name %>) المرقمة (<%= contract.carID.carNumber %>)</p></td>
         </tr>
         <tr>
           <td colspan="1"><p>الملاحظات(Notes): لايوجد</p></td>

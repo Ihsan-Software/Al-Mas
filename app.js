@@ -16,12 +16,14 @@ const userRouter = require("./routes/userRoute");
 const authRouter = require("./routes/authRoute");
 const tenantRouter = require("./routes/tenantRoute");
 const carRouter = require("./routes/carRoute");
+const contractRouter = require("./routes/contractRoute");
 
 const app = express();
 
 
 // Middleware to parse JSON and form data if needed
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'uploads')));
 if (process.env.NODE_ENV === 'development') {
@@ -31,67 +33,12 @@ if (process.env.NODE_ENV === 'development') {
 app.get("/", (req, res) => {
   res.send("Hi Again,dear...");
 });
-// Route to render and generate PDF
-/*app.get('/gg', async (req, res) => {
-  // Replace with actual data you want to pass to the EJS template
-  const data = { name: 'Example Name' };
-
-  try {
-    // Render the EJS template to HTML string
-    const html = await ejs.renderFile(path.join(__dirname, 'views', 'home.ejs'), data);
-
-    // Launch Puppeteer with path to your installed Chromium or Chrome
-    const browser = await puppeteer.launch({
-      headless: true,
-      executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', // Custom function below
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-
-    const page = await browser.newPage();
-
-    
-    // Set HTML content
-    await page.setViewport({
-      width: 794,
-      height: 1123,
-      deviceScaleFactor: 1
-    });
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-
-    // Generate PDF as buffer
-    const pdfBuffer = await page.pdf({
-      printBackground: true,
-      width: '210mm', // A4 width
-      height: '297mm', // A4 height
-      margin: {
-        top: '0mm',
-        bottom: '0mm',
-        left: '0mm',
-        right: '0mm'
-      }
-    });
-
-
-    await browser.close();
-
-    // Send the PDF to the browser
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="form.pdf"'
-    });
-
-    res.send(pdfBuffer);
-  } catch (error) {
-    console.error('PDF generation error:', error);
-    res.status(500).send('Failed to generate PDF');
-  }
-});*/
 
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/tenant', tenantRouter);
 app.use('/car', carRouter);
+app.use('/contract', contractRouter);
 
 app.all('/*splat', (req, res, next) => {
   next(new ApiError(`can't find this route: ${req.originalUrl}`, 400));
