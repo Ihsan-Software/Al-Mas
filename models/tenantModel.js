@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-
+const dayjs = require('dayjs');
 const tenantSchema = new mongoose.Schema(
 {
     name: {
@@ -58,11 +58,11 @@ const tenantSchema = new mongoose.Schema(
         required: [true, "issuing authority required"],
     },
     ReleaseDate: {
-        type: Date,
+        type: String,
         required: [true, "Release date required"],
     },
     expirationDate: {
-        type: Date,
+        type: String,
         required: [true, " Expiration date required"],
     },
     nationality: {
@@ -71,7 +71,7 @@ const tenantSchema = new mongoose.Schema(
         required: [true, "nationality required"],
     },
     birthDate: {
-        type: Date,
+        type: String,
         required: [true, " birth date required"],
     },
     drivingLicenseNumber: {
@@ -80,11 +80,11 @@ const tenantSchema = new mongoose.Schema(
         required: [true, "Driving license number required"],
     },
     drivingLicenseIssueDate: {
-        type: Date,
+        type: String,
         required: [true, " Driving license issue date required"],
     },
     drivingLicenseExpirationDate: {
-        type: Date,
+        type: String,
         required: [true, " Driving license expiration date required"],
     },
     personalImage: {
@@ -105,19 +105,12 @@ const tenantSchema = new mongoose.Schema(
 );
 
 
-tenantSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    // Hashing user password
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
-});
-
 const setImageURL = (doc) => {
-  if (doc.personalImage) {
+  if (doc.personalImage && !doc.personalImage.includes(`${process.env.BASE_URL}`)) {
     const imageUrl = `${process.env.BASE_URL}/tenant/${doc.personalImage}`;
     doc.personalImage = imageUrl;
   }
-  if (doc.personalDocumentsImag) {
+  if (doc.personalDocumentsImag && !doc.personalDocumentsImag.includes(`${process.env.BASE_URL}`)) {
     const personalDocumentsImagList = [];
     doc.personalDocumentsImag.forEach((image) => {
       const imageUrl = `${process.env.BASE_URL}/tenant/${image}`;

@@ -68,10 +68,10 @@ exports.deleteCar = factory.deleteOne(Car);
 exports.getCarUseName = asyncHandler(async (req, res, next) => {
 
     // 1) Build query
-    const car = await Car.findOne({name:req.body.name});
+    const car = await Car.findOne({name:req.query.name});
 
     if (!car) {
-      return next(new ApiError(`No Car for this name: ${req.body.name}`, 404));
+      return next(new ApiError(`No Car for this name: ${req.query.name}`, 404));
     }
     res.status(200).json({ data: car });
 });

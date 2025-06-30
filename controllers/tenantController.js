@@ -18,7 +18,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         const personalImageFileName = `tenant-${uuidv4()}-${Date.now()}-personalImage.jpeg`;
 
         await sharp(req.files.personalImage[0].buffer)
-        .resize(600, 600)
+        .resize(2000, 1333)
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`uploads/tenant/${personalImageFileName}`);
@@ -103,10 +103,10 @@ exports.deleteTenant = factory.deleteOne(Tenant);
 exports.getTenantUseName = asyncHandler(async (req, res, next) => {
 
     // 1) Build query
-    const tenant = await Tenant.findOne({name:req.body.name});
+    const tenant = await Tenant.findOne({name:req.query.name});
 
     if (!tenant) {
-      return next(new ApiError(`No tenant for this name: ${req.body.name}`, 404));
+      return next(new ApiError(`No tenant for this name: ${req.query.name}`, 404));
     }
     res.status(200).json({ data: tenant });
 });

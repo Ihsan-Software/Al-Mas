@@ -56,12 +56,11 @@ const carSchema = new mongoose.Schema(
 { timestamps: true }
 );
 
-
 const setImageURL = (doc) => {
-  if (doc.image) {
-    const imageUrl = `${process.env.BASE_URL}/cars/${doc.image}`;
-    doc.image = imageUrl;
-  }
+    if (doc.image && !doc.image.includes(`${process.env.BASE_URL}`)) {
+        const imageUrl = `${process.env.BASE_URL}/cars/${doc.image}`;
+        doc.image = imageUrl;
+    }
 };
 // findOne, findAll and update
 carSchema.post('init', (doc) => {

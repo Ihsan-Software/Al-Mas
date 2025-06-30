@@ -5,7 +5,7 @@ exports.getAll = (Model) => asyncHandler(async (req, res) => {
 
   const documents = await Model.find();
 
-    res.status(200).json({data: documents });
+    res.status(200).json({results:documents.length , data: documents });
   });
 
 
