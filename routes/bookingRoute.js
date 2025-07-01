@@ -18,7 +18,7 @@ const {
   updateBooking,
   deleteBooking,
   getBookingUseName
-} = require("../controllers/BookingController");
+} = require("../controllers/bookingController");
 
 const auth = require("../controllers/authController");
 const router = express.Router();
