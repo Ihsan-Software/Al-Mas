@@ -32,6 +32,7 @@ exports.getOne = (Model, populationOpt) =>
 
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
+    req.body.userID = req.user._id
     const newDoc = await Model.create(req.body);
     res.status(201).json({ data: newDoc });
   });

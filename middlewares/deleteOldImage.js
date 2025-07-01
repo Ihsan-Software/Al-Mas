@@ -17,6 +17,9 @@ const deleteOldImage = (Model, imageField, uploadFolder) =>
       return next();
     }else if(Model =='Car' && !req.file){
        return next();
+    }else if(Model =='Fines' && !req.file){
+      console.log('gg')
+       return next();
     }
     else if(Model =='Tenant' && !req.files){
        return next();
