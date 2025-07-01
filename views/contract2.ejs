@@ -174,70 +174,70 @@
     <!-- Single merged table -->
     <table class="table2">
 
-      <thead><tr><th colspan="5">الطرف الاول(المؤجر)</th></tr></thead>
+      <thead><tr><th colspan="5">الطرف الاول(المؤجر) - First party (lessor)</th></tr></thead>
       <tbody>
         <tr>
-          <th colspan="2">اسم الشركة</th>
+          <th colspan="2">اسم الشركة - Company Name</th>
           <td colspan="3">الماس لتأجير السيارات</th>
         </tr>
         <tr>
-          <th colspan="2">رقم الاجازة والرقم التجاري</td>
+          <th colspan="2">رقم الاجازة والرقم التجاري - License number and commercial number</td>
           <td colspan="3">(16912 اجازة ),(8657/326 تجاري ) </td>
         </tr>
         <tr>
-          <th colspan="2">ويمثلها السيد</th>
+          <th colspan="2">ويمثلها السيد - Represented by Mr.</th>
           <td colspan="3">ايمن سالم غسان</th>
         </tr>
       </tbody>
 
-      <thead><tr><th colspan="5">الطرف الثاني(السائق)</th></tr></thead>
+      <thead><tr><th colspan="5">الطرف الثاني(السائق) - The second party (the driver)</th></tr></thead>
       <tbody>
         <tr>
-          <th colspan="2">اسم السائق</th>
+          <th colspan="2">اسم السائق - Driver's name</th>
           <td colspan="3"><%= contract.driverName %></th>
         </tr>
         <tr>
-          <th colspan="2">رقم البطاقة الوطنية</td>
+          <th colspan="2">رقم البطاقة الوطنية - National ID number</td>
           <td colspan="3"><%= contract.cardNumber %> </td>
         </tr>
         <tr>
-          <th colspan="2">رقم الهاتف </th>
+          <th colspan="2">رقم الهاتف - phone number</th>
           <td colspan="3"><%= contract.phone %></th>
         </tr>
         <tr>
-          <th colspan="2">عنوان السكن</th>
+          <th colspan="2">عنوان السكن - address</th>
           <td colspan="3"><%= contract.address %></th>
         </tr>
       </tbody>
 
-      <thead><tr><th colspan="5">الطرف الثالث(المستأجر)</th></tr></thead>
+      <thead><tr><th colspan="5">الطرف الثالث(المستأجر) - Third party (tenant)</th></tr></thead>
       <tbody>
         <tr>
-          <th colspan="2">اسم المستاجر</th>
+          <th colspan="2">اسم المستاجر - Tenant's name</th>
           <td colspan="3"><%= contract.tenantID.name %></th>
         </tr>
         <tr>
-          <th colspan="2">رقم البطاقة الوطنية</td>
+          <th colspan="2">رقم البطاقة الوطنية - National ID number</td>
           <td colspan="3"><%= contract.tenantID.numberOfIdentification %> </td>
         </tr>
         <tr>
-          <th colspan="2">رقم الهاتف </th>
+          <th colspan="2">رقم الهاتف - phone number</th>
           <td colspan="3"><%= contract.tenantID.phone %></th>
         </tr>
         <tr>
-          <th colspan="2">عنوان السكن</th>
+          <th colspan="2">عنوان السكن - address</th>
           <td colspan="3"><%= contract.tenantID.houseLocation %></th>
         </tr>
       </tbody>
 
-      <thead><tr><th colspan="5">بيانات المركبة ومدةالايجار والمبلغ</th></tr></thead>
+      <thead><tr><th colspan="5">بيانات المركبة ومدةالايجار والمبلغ - Vehicle data, rental period and amount</th></tr></thead>
       <tbody>
         <tr>
-          <th colspan="1">اسم المركبة</th>
-          <th colspan="1">الرقم</td>
-          <th colspan="1">النوع</td>
-          <th colspan="1">رقم الشاصي </td>
-          <th colspan="1">رقم الهوية </td>
+          <th colspan="1">اسم المركبة - Vehicle name</th>
+          <th colspan="1">الرقم - The number</td>
+          <th colspan="1">النوع - Type</td>
+          <th colspan="1">رقم الشاصي - Chassis number</td>
+          <th colspan="1">رقم الهوية - ID number</td>
         </tr>
         <tr>
           <td colspan="1"><%= contract.carID.name %></th>
@@ -248,11 +248,11 @@
         </tr>
 
         <tr>
-          <th colspan="1">الموديل</th>
-          <th colspan="1">اللون</td>
-          <th colspan="1">تاريخ الايجار</td>
-          <th colspan="1">تاريخ العودة</td>
-          <th colspan="1">المبلغ الاجمالي</td>
+          <th colspan="1">الموديل - Model</th>
+          <th colspan="1">اللون - Color</td>
+          <th colspan="1">تاريخ الايجار - Rental date</td>
+          <th colspan="1">تاريخ العودة - Return date</td>
+          <th colspan="1">المبلغ الاجمالي - Total amount</td>
         </tr>
         <tr>
           <td colspan="1"><%= contract.carID.carModel %></th>
@@ -269,15 +269,15 @@
 
       <tr>
         <td class="signature-text">
-          <strong>اسم وتوقيع منظم العقد</strong>
+          <strong>اسم وتوقيع منظم العقد - Name and signature of the contract organizer</strong>
           <p><%= contract.userID.name %></p>
         </td>
         <td class="signature-text" style="text-align: center;">
-          <strong>اسم وتوقيع السائق</strong>
+          <strong>اسم وتوقيع السائق - Driver's name and signature</strong>
           <p><%= contract.driverName %></p>
         </td>
         <td class="signature-text" style="text-align: left;">
-          <strong>اسم وتوقيع المستأجر</strong>
+          <strong>اسم وتوقيع المستأجر - Name and signature of the tenant</strong>
           <p><%= contract.tenantID.name %></p>
         </td>
       </tr>
