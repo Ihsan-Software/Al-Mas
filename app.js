@@ -14,6 +14,7 @@ const tenantRouter = require("./routes/tenantRoute");
 const carRouter = require("./routes/carRoute");
 const contractRouter = require("./routes/contractRoute");
 const bookingRouter = require("./routes/bookingRoute");
+const finesRoute = require("./routes/finesRoute");
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/tenant', tenantRouter);
 app.use('/car', carRouter);
 app.use('/contract', contractRouter);
 app.use('/booking', bookingRouter);
+app.use('/fines', finesRoute);
 
 app.all('/*splat', (req, res, next) => {
   next(new ApiError(`can't find this route: ${req.originalUrl}`, 400));

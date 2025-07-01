@@ -35,7 +35,7 @@ router.route("/")
   .post(uploadCarImage, resizeImage, createCarValidator, createCar);
 
 router.route("/search")
-  .get(getCarUseName)
+  .get(getCarUseNameValidator, getCarUseName)
 router.route("/updateCarImage/:id")
   .patch(uploadCarImage, deleteOldCarImage, resizeImage, updateCar)
 router
