@@ -69,9 +69,14 @@ exports.deleteOldTenantImage = deleteOldImage(Tenant, 'personalImage', 'tenant')
 // @route   GET /tenant
 // @access  Private/ Admin, Manager
 exports.getTenants = asyncHandler(async (req, res) => {
-  const isBlockedStatus = req.query.isBlocked
-  const tenant = await Tenant.find({isBlocked:isBlockedStatus});
-    res.status(200).json({data: tenant });
+  let tenants
+  if (req.query.isBlocked){
+     tenants = await Tenant.find({isBlocked:req.query.isBlocked});
+  }
+  else{
+     tenants = await Tenant.find().sort({ isBlocked: -1 });
+  }
+    res.status(200).json({data: tenants });
   });
 
 
