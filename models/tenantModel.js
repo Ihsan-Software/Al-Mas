@@ -93,7 +93,8 @@ const tenantSchema = new mongoose.Schema(
    },
    personalDocumentsImag:{
       type: [String],
-      required: [true, 'personal Documents Image is required'],
+    default: 'gg.jpg'
+      //required: [true, 'personal Documents Image is required'],
    },
    isBlocked:{
     type: Boolean,

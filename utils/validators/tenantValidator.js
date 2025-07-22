@@ -84,6 +84,7 @@ exports.createTenantValidator = [
     .withMessage("personal Image required"),
 
   check("personalDocumentsImag")
+    .optional()
     .notEmpty()
     .withMessage("personal Documents Imag required"),
 
