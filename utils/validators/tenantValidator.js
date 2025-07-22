@@ -79,9 +79,9 @@ exports.createTenantValidator = [
     .withMessage("driving License Expiration Date required"),
 
 
-  //check("personalImage")
-   // .notEmpty()
-   // .withMessage("personal Image required"),
+  check("personalImage")
+    .notEmpty()
+    .withMessage("personal Image required"),
 
   check("personalDocumentsImag")
     .optional()
