@@ -83,10 +83,15 @@ exports.createTenantValidator = [
     .notEmpty()
     .withMessage("personal Image required"),
 
-  check("personalDocumentsImag")
+  check("personalDocumentsImagRequired")
+    .notEmpty()
+    .withMessage("Required personal Documents Imag required"),
+
+  check("personalDocumentsImagOptional")
     .optional()
     .notEmpty()
     .withMessage("personal Documents Imag required"),
+
 
   validatorMiddleware,
 ];
@@ -191,10 +196,15 @@ check("drivingLicenseExpirationDate")
   .notEmpty()
   .withMessage("Personal image required"),
 
-  check("personalDocumentsImag")
+  check("personalDocumentsImagRequired")
     .optional()
     .notEmpty()
-    .withMessage("Personal documents image required"),
+    .withMessage("Required personal Documents Imag required"),
+
+  check("personalDocumentsImagOptional")
+    .optional()
+    .notEmpty()
+    .withMessage("personal Documents Imag required"),
   
   validatorMiddleware,
 ];

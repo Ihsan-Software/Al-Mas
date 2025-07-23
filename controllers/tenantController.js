@@ -27,27 +27,34 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         req.body.personalImage = personalImageFileName;
     }
     //2- Image processing for images
-    if (req.files.personalDocumentsImag) {
-        req.body.personalDocumentsImag = [];
-        await Promise.all(
-            req.files.personalDocumentsImag.map(async (img, index) => {
-                const personalDocumentsImagName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImag${index + 1}.jpeg`;
+    if (req.files.personalDocumentsImagRequired) {
+        const personalDocumentsImagRequiredFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagRequired.jpeg`;
 
-                await sharp(img.buffer)
-                .resize(2000, 1333)
-                .toFormat("jpeg")
-                .jpeg({ quality: 95 })
-                .toFile(`uploads/tenant/${personalDocumentsImagName}`);
+        await sharp(req.files.personalDocumentsImagRequired[0].buffer)
+        .resize(2000, 1333)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(`uploads/tenant/${personalDocumentsImagRequiredFileName}`);
 
-                // Save image into our db
-                req.body.personalDocumentsImag.push(personalDocumentsImagName);
-            })
-        );
-        next();
-    }else{
-      next();
+        // Save image into our db
+        req.body.personalDocumentsImagRequired = personalDocumentsImagRequiredFileName;
+
+    }
+    if (req.files.personalDocumentsImagOptional) {
+        const personalDocumentsImagOptionalFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagOptional.jpeg`;
+
+        await sharp(req.files.personalDocumentsImagOptional[0].buffer)
+        .resize(2000, 1333)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(`uploads/tenant/${personalDocumentsImagOptionalFileName}`);
+
+        // Save image into our db
+        req.body.personalDocumentsImagOptional = personalDocumentsImagOptionalFileName;
     }
     
+    next();
+
 });
 const tenantImages = [
   {
@@ -55,8 +62,12 @@ const tenantImages = [
     maxCount: 1,
   },
   {
-    name: "personalDocumentsImag",
-    maxCount: 2,
+    name: "personalDocumentsImagRequired",
+    maxCount: 1,
+  },
+  {
+    name: "personalDocumentsImagOptional",
+    maxCount: 1,
   },
 ];
 exports.uploadTenantImage = uploadMixOfImages(tenantImages);

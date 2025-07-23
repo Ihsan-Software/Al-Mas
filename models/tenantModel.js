@@ -91,10 +91,13 @@ const tenantSchema = new mongoose.Schema(
       type: String,
       required: [true, 'personal Image is required']
    },
-   personalDocumentsImag:{
-      type: [String],
-    default: 'gg.jpg'
-      //required: [true, 'personal Documents Image is required'],
+   personalDocumentsImagRequired:{
+    type: String,
+    required: [true, 'Required personal Documents Image  is required'],
+   },
+   personalDocumentsImagOptional:{
+    type: String,
+    default: 'default.jpg'
    },
    isBlocked:{
     type: Boolean,
@@ -111,14 +114,18 @@ const setImageURL = (doc) => {
     const imageUrl = `${process.env.BASE_URL}/tenant/${doc.personalImage}`;
     doc.personalImage = imageUrl;
   }
-  if (doc.personalDocumentsImag && !doc.personalDocumentsImag.includes(`${process.env.BASE_URL}`)) {
-    const personalDocumentsImagList = [];
-    doc.personalDocumentsImag.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/tenant/${image}`;
-      personalDocumentsImagList.push(imageUrl);
-    });
-    doc.personalDocumentsImag = personalDocumentsImagList;
+
+
+  if (doc.personalDocumentsImagRequired && !doc.personalDocumentsImagRequired.includes(`${process.env.BASE_URL}`)) {
+    const imageUrl = `${process.env.BASE_URL}/tenant/${doc.personalDocumentsImagRequired}`;
+    doc.personalDocumentsImagRequired = imageUrl;
   }
+
+  if (doc.personalDocumentsImagOptional && !doc.personalDocumentsImagOptional.includes(`${process.env.BASE_URL}`)) {
+    const imageUrl = `${process.env.BASE_URL}/tenant/${doc.personalDocumentsImagOptional}`;
+    doc.personalDocumentsImagOptional = imageUrl;
+  }
+
 };
 // findOne, findAll and update
 tenantSchema.post('init', (doc) => {
