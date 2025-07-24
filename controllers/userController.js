@@ -83,6 +83,7 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
         },
         {
         new: true,
+        runValidators: true,
         }
     );
 

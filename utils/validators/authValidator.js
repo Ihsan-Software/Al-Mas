@@ -6,8 +6,8 @@ exports.signupValidator = [
   check('name')
     .notEmpty()
     .withMessage('User required')
-    .isLength({ min: 2 })
-    .withMessage('Too short User name'),
+    .isLength({ min: 2 , max: 50})
+    .withMessage('User name must be between 2 and 50 characters'),
 
   check('email')
     .notEmpty()
@@ -24,15 +24,17 @@ exports.signupValidator = [
   check('password')
     .notEmpty()
     .withMessage('Password required')
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters'),
+    .isLength({ min: 12, max: 64 }) // secure range
+    .withMessage('Password must be between 12 and 64 characters'),
 
   check("phone")
     .optional()
-    .isMobilePhone(["ar-IQ"])
-    .withMessage("Invalid phone number only accepted Iraq Phone numbers"),
+    .isLength({min:11, max: 15 }) 
+    .withMessage('Phone number must be between 11 and 15 digits'),
 
-  check("image").optional(),
+  check("image")
+    .notEmpty()
+    .withMessage('image required'),
   check("role").optional(),
   validatorMiddleware,
 ];
@@ -47,8 +49,8 @@ exports.loginValidator = [
   check('password')
     .notEmpty()
     .withMessage('Password required')
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters'),
+    .isLength({ min: 12, max: 64 }) // secure range
+    .withMessage('Password must be between 12 and 64 characters'),
 
   validatorMiddleware,
 ];
