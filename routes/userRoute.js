@@ -34,7 +34,8 @@ router.use(auth.protect);
 
 router.get("/getMyInfo", getLoggedUserData, getUser);
 router.patch("/updateMyPassword", updateLoggedUserPassword);
-router.patch("/updateMyInfo",uploadUserImage, resizeImage,  updateLoggedUserValidator, updateLoggedUserData);
+router.patch("/updateMyInfo",updateLoggedUserValidator, updateLoggedUserData);
+router.patch("/updateMyImage",uploadUserImage, deleteOldUserImage, resizeImage, updateLoggedUserData);
 router.delete("/deleteMyAccount", deleteLoggedUserData);
 
 
@@ -48,7 +49,7 @@ router.route("/")
 router
   .route("/:id")
   .get(getUserValidator, getUser)
-  .patch(uploadUserImage, deleteOldUserImage, resizeImage, updateUserValidator, updateUser)
+  .patch( updateUserValidator, updateUser)
   .delete(deleteUserValidator, deleteUser);
 
 module.exports = router;

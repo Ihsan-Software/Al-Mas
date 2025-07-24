@@ -97,16 +97,10 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
 // @route   PUT /users/updateMe
 // @access  Private/Protect
 exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
-    const updatedUser = await User.findByIdAndUpdate(
-        req.user._id,
-        {
-        name: req.body.name,
-        email: req.body.email,
-        phone: req.body.phone,
-        image: req.body.image
-        },
-        { new: true }
-    );
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     res.status(200).json({ data: updatedUser });
 });

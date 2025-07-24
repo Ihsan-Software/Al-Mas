@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     image: {
         type: String,
-        default: 'defaultImage.jpeg'
+        required: [true, "image required"]
    },
     phone: String,
     role: {

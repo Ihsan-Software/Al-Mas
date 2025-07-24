@@ -11,7 +11,13 @@ const ApiError = require('../utils/apiError'); // adjust the path if needed
  */
 const deleteOldImage = (Model, imageField, uploadFolder) =>
   asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    let id;
+    if (req.params.id){
+      id  = req.params.id;
+    }
+    else {
+      id  = req.user.id;
+    }
     // Skip if no new file uploaded
     if ((Model =='User' && !req.file) ) {
       return next();
@@ -24,7 +30,7 @@ const deleteOldImage = (Model, imageField, uploadFolder) =>
     else if(Model =='Tenant' && !req.files){
        return next();
     }
-
+    console.log(Model, imageField, uploadFolder)
     const doc = await Model.findById(id);
     if (!doc) {
       return next(new ApiError(`No document found for this ID: ${id}`, 404));
