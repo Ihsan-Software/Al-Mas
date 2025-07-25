@@ -50,7 +50,7 @@ router.route("/")
 router
   .route("/:id")
   .get(getUserValidator, getUser)
-  .patch( updateUserValidator, updateUser)
+  .patch( uploadUserImage, deleteOldUserImage, resizeImage, updateUserValidator, updateUser)
   .delete(deleteUserValidator, deleteUser);
 
 module.exports = router;

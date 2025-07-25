@@ -24,8 +24,8 @@ exports.signupValidator = [
   check('password')
     .notEmpty()
     .withMessage('Password required')
-    .isLength({ min: 12, max: 64 }) // secure range
-    .withMessage('Password must be between 12 and 64 characters'),
+    .isLength({ min: 8, max: 64 }) // secure range
+    .withMessage('Password must be between 8 and 64 characters'),
 
   check("phone")
     .optional()
@@ -49,8 +49,8 @@ exports.loginValidator = [
   check('password')
     .notEmpty()
     .withMessage('Password required')
-    .isLength({ min: 12, max: 64 }) // secure range
-    .withMessage('Password must be between 12 and 64 characters'),
+    .isLength({ min: 8, max: 64 }) // secure range
+    .withMessage('Password must be between 8 and 64 characters'),
 
   validatorMiddleware,
 ];

@@ -26,8 +26,8 @@ exports.createUserValidator = [
   check('password')
     .notEmpty()
     .withMessage('Password required')
-    .isLength({ min: 12, max: 64 }) // secure range
-    .withMessage('Password must be between 12 and 64 characters'),
+    .isLength({ min: 8, max: 64 }) // secure range
+    .withMessage('Password must be between 8 and 64 characters'),
 
   check("phone")
     .optional()
@@ -71,8 +71,8 @@ exports.updateUserValidator = [
     .optional()
     .notEmpty()
     .withMessage('Password required')
-    .isLength({ min: 12, max: 64 }) // secure range
-    .withMessage('Password must be between 12 and 64 characters'),
+    .isLength({ min: 8, max: 64 }) // secure range
+    .withMessage('Password must be between 8 and 64 characters'),
   check("phone")
     .optional()
     .isLength({min:11, max: 15 }) 
@@ -127,7 +127,7 @@ exports.updateLoggedUserPasswordValidator = [
   check('newPassword')
     .notEmpty()
     .withMessage('New password is required')
-    .isLength({ min: 12, max: 64 })
-    .withMessage('Password must be between 12 and 64 characters'),
+    .isLength({ min: 8, max: 64 })
+    .withMessage('Password must be between 8 and 64 characters'),
   validatorMiddleware,
 ];

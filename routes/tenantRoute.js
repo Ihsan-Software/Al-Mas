@@ -35,13 +35,11 @@ router.route("/")
   .post(uploadTenantImage, resizeTenantImages, createTenantValidator, createTenant);
 
 router.route("/search")
-  .get(getTenantUseName)
-router.route("/updateTenantImage/:id")
-  .patch(uploadTenantImage, deleteOldTenantImage, resizeTenantImages, updateTenant)
+  .get(getTenantUseNameValidator, getTenantUseName)
 router
   .route("/:id")
   .get(getTenantValidator, getTenant)
-  .patch( updateTenantValidator, updateTenant)
+  .patch(uploadTenantImage, deleteOldTenantImage, resizeTenantImages, updateTenantValidator, updateTenant)
   .delete(deleteTenantValidator, deleteTenant);
 
 module.exports = router;

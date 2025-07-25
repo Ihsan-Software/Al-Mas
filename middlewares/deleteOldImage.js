@@ -11,42 +11,42 @@ const ApiError = require('../utils/apiError'); // adjust the path if needed
  */
 const deleteOldImage = (Model, imageField, uploadFolder) =>
   asyncHandler(async (req, res, next) => {
-    let id;
-    if (req.params.id){
-      id  = req.params.id;
-    }
-    else {
-      id  = req.user.id;
-    }
-    // Skip if no new file uploaded
-    if ((Model =='User' && !req.file) ) {
-      return next();
-    }else if(Model =='Car' && !req.file){
-       return next();
-    }else if(Model =='Fines' && !req.file){
-      console.log('gg')
-       return next();
-    }
-    else if(Model =='Tenant' && !req.files){
-       return next();
-    }
+    const { id } = req.params
+
     console.log(Model, imageField, uploadFolder)
     const doc = await Model.findById(id);
     if (!doc) {
-      return next(new ApiError(`No document found for this ID: ${id}`, 404));
+      return next(new ApiError(`No document found for this ID: ${id} To delete older image`, 404));
     }
-    let oldImage = doc[imageField];
-    oldImage = oldImage.replace(`${process.env.BASE_URL}/${uploadFolder}`, "");
-
-    if (oldImage) {
-      const imagePath = path.join(__dirname, `../uploads/${uploadFolder}/`, oldImage);
-      fs.unlinkSync(imagePath, (err) => {
-        if (err && err.code !== 'ENOENT') {
-          console.error(`Failed to delete old image:`, err);
+    // for delete tenant images 
+    if(imageField == 'personalImage'){
+      let names=['personalImage', 'personalDocumentsImagRequired', 'personalDocumentsImagOptional']
+      names.forEach((currentName) => {
+        let oldImage = doc[currentName];
+        oldImage = oldImage.replace(`${process.env.BASE_URL}/${uploadFolder}`, "");
+        if (oldImage) {
+          const imagePath = path.join(__dirname, `../uploads/${uploadFolder}/`, oldImage);
+          fs.unlinkSync(imagePath, (err) => {
+            if (err && err.code !== 'ENOENT') {
+              console.error(`Failed to delete old image:`, err);
+            }
+          });
         }
       });
     }
-
+    // for delete other model image
+    else{
+      let oldImage = doc[imageField];
+      oldImage = oldImage.replace(`${process.env.BASE_URL}/${uploadFolder}`, "");
+      console.log(oldImage)
+      if (oldImage) {
+        const imagePath = path.join(__dirname, `../uploads/${uploadFolder}/`, oldImage);
+        fs.unlinkSync(imagePath, (err) => {
+          if (err && err.code !== 'ENOENT') {
+            console.error(`Failed to delete old image:`, err);
+          }
+        });}
+    }
     next();
   });
 

@@ -36,12 +36,10 @@ router.route("/")
 
 router.route("/search")
   .get(getCarUseNameValidator, getCarUseName)
-router.route("/updateCarImage/:id")
-  .patch(uploadCarImage, deleteOldCarImage, resizeImage, updateCar)
 router
   .route("/:id")
   .get(getCarValidator, getCar)
-  .patch( updateCarValidator, updateCar)
+  .patch(uploadCarImage, deleteOldCarImage, resizeImage, updateCarValidator, updateCar)
   .delete(deleteCarValidator, deleteCar);
 
 module.exports = router;

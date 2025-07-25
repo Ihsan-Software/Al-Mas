@@ -32,7 +32,7 @@ router.use(auth.allowedTo("admin"));
 
 router.route("/")
   .get(getFines)
-  .post(uploadFineImage, deleteOldFineImage, resizeImage, createFineValidator, createFine);
+  .post(uploadFineImage, resizeImage, createFineValidator, createFine);
 
 router.route("/search")
   .get(getFineUseNameValidator, getFineUseName)
