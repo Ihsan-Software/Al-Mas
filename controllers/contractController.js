@@ -65,7 +65,7 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
   // end calculate contract date and return date
 
     // update car status
-    await Car.findByIdAndUpdate(req.body.carID, { carStatus: 'rented' });
+    await Car.findByIdAndUpdate(req.body.carID, { carStatus: 'مؤجرة' });
 
     // create contract number
     const contractCount = await Contract.countDocuments();

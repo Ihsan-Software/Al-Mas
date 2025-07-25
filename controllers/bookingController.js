@@ -26,7 +26,7 @@ exports.createBooking =  asyncHandler(async (req, res, next) => {
     req.body.userID = req.user._id
 
     // update car status
-    await Car.findByIdAndUpdate(req.body.carID, { carStatus: 'rented' });
+    await Car.findByIdAndUpdate(req.body.carID, { carStatus: 'محجوزة' });
 
     // create Booking number
     const bookingCount = await Booking.countDocuments();
