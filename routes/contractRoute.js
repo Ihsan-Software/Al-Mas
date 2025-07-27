@@ -18,7 +18,8 @@ const {
   updateContract,
   deleteContract,
   getContractUseName,
-  createPdfFile
+  createPdfFile,
+  sendHtmlPage
 } = require("../controllers/contractController");
 
 const auth = require("../controllers/authController");
@@ -38,6 +39,8 @@ router.route("/search")
 router.route("/createPDF/:id")
   .get(createPdfFile)
 
+  router.route("/htmlPage/:id")
+  .get(sendHtmlPage)
 
 router
   .route("/:id")

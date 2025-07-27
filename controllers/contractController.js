@@ -165,6 +165,24 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
 });
 
 
+exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const contract = await Contract.findById(id);
+  if (!contract) {
+    return next(new ApiError(`No contract found for ID ${id}`, 404));
+  }
+
+
+  const html = await ejs.renderFile(
+      path.join(__dirname, '../views', `${req.query.htmlName}.ejs`),
+      { contract }
+    );
+
+    // Send rendered HTML to client
+    res.set('Content-Type', 'text/html');
+    res.send(html);
+});
+
 /*
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
 
