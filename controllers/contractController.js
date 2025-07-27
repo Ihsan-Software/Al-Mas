@@ -2,7 +2,9 @@ const path = require('path');
 const ejs = require('ejs');
 const dayjs = require("dayjs");
 
-const puppeteer = require('puppeteer-core');
+const puppeteer = require("puppeteer");
+//const puppeteer = require('puppeteer-core');
+
 const asyncHandler = require("express-async-handler");
 
 const ApiError = require("../utils/apiError");
@@ -106,6 +108,65 @@ exports.getContractUseName = asyncHandler(async (req, res, next) => {
 });
 
 
+
+exports.createPdfFile = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const contract = await Contract.findById(id);
+  if (!contract) {
+    return next(new ApiError(`No contract found for ID ${id}`, 404));
+  }
+
+  // Render EJS template to HTML
+  const html = await ejs.renderFile(
+    path.join(__dirname, `../views/${req.query.pdfName}.ejs`),
+    { contract }
+  );
+
+  if (!html) {
+    return next(new ApiError("Failed to render EJS template", 500));
+  }
+
+  // Launch Puppeteer and create PDF
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    // Don't include executablePath unless you're using puppeteer-core
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({
+    width: 794,
+    height: 1123,
+    deviceScaleFactor: 1
+  });
+
+  await page.setContent(html, { waitUntil: "networkidle0" });
+
+  const pdfBuffer = await page.pdf({
+    printBackground: true,
+    width: "210mm",
+    height: "297mm",
+    margin: {
+      top: "0mm",
+      bottom: "0mm",
+      left: "0mm",
+      right: "0mm"
+    }
+  });
+
+  await browser.close();
+
+  // Send the PDF as a response
+  res.set({
+    "Content-Type": "application/pdf",
+    "Content-Disposition": "attachment; filename=form.pdf"
+  });
+
+  res.send(pdfBuffer);
+});
+
+
+/*
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
 
   const { id } = req.params;
@@ -156,7 +217,7 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
 
   res.send(pdfBuffer);
 });
-
+*/
 
 
 

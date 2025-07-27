@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: puppeteer-pdf-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: "false"
