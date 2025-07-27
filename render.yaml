@@ -6,7 +6,7 @@ services:
     buildCommand: |
       npm install
       npx puppeteer browsers install chrome
-      startCommand: npm start
+    startCommand: npm start
     envVars:
       - key: PUPPETEER_SKIP_DOWNLOAD
         value: "false"
