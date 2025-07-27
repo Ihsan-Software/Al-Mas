@@ -8,5 +8,5 @@ services:
       npx puppeteer browsers install chrome
     startCommand: npm start
     envVars:
-      - key: PUPPETEER_SKIP_DOWNLOAD
-        value: "false"
+      - key: PUPPETEER_CACHE_DIR
+        value: /opt/render/.cache/puppeteer
