@@ -3,7 +3,6 @@ const ejs = require('ejs');
 const dayjs = require("dayjs");
 
 const puppeteer = require("puppeteer");
-//const puppeteer = require('puppeteer-core');
 
 const asyncHandler = require("express-async-handler");
 
