@@ -3,8 +3,10 @@ services:
     name: puppeteer-pdf-api
     runtime: node
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: |
+      npm install
+      npx puppeteer browsers install chrome
+      startCommand: npm start
     envVars:
       - key: PUPPETEER_SKIP_DOWNLOAD
         value: "false"
