@@ -45,11 +45,7 @@ const finesSchema = new mongoose.Schema(
         type: String,
         trim: true,
         default: ''
-    },
-    image: {
-        type: String,
-        default: 'defaultImage.jpeg'
-   },
+    }
 },
 { timestamps: true }
 );

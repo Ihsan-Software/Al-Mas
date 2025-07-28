@@ -19,7 +19,9 @@ const {
   deleteContract,
   getContractUseName,
   createPdfFile,
-  sendHtmlPage
+  sendHtmlPage,
+  getInsurance,
+  getImportsPricesByDate
 } = require("../controllers/contractController");
 
 const auth = require("../controllers/authController");
@@ -32,6 +34,9 @@ router.use(auth.allowedTo("admin"));
 router.route("/")
 .get(getContracts)
 .post(createContractValidator, createContract);
+
+router.route('/getInsurance').get(getInsurance);
+router.route('/getImportsUseDate').get(getImportsPricesByDate);
 
 router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
