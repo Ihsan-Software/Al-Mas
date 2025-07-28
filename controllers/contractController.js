@@ -106,7 +106,114 @@ exports.getContractUseName = asyncHandler(async (req, res, next) => {
   });
 });
 
+//Insurance التامينات
+exports.getInsurance = asyncHandler(async (req, res) => {
 
+  const elevenDaysAgo = new Date();
+  elevenDaysAgo.setDate(elevenDaysAgo.getDate() - 11);
+
+  const result = await Contract.aggregate([
+    {
+      $match: {
+        createdAt: { $lte: elevenDaysAgo }
+      }
+    },
+    // Lookup tenant info
+    {
+      $lookup: {
+        from: 'tenants',
+        localField: 'tenantID',
+        foreignField: '_id',
+        as: 'tenant'
+      }
+    },
+    { $unwind: '$tenant' },
+
+    // Lookup car info
+    {
+      $lookup: {
+        from: 'cars',
+        localField: 'carID',
+        foreignField: '_id',
+        as: 'car'
+      }
+    },
+    { $unwind: '$car' },
+
+    {
+      $project: {
+        _id: 0,
+        tenantName: '$tenant.name',
+        carName: '$car.name',
+        insuranceType: 1,
+        createdAt: 1
+      }
+    }
+  ]);
+
+  res.status(200).json(result);
+});
+
+
+// imports 
+exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
+  const { date } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ message: 'Date is required in query' });
+  }
+
+  // Parse date range (same day from 00:00 to 23:59)
+  const startDate = new Date(date);
+  const endDate = new Date(date);
+  endDate.setHours(23, 59, 59, 999);
+
+  const result = await Contract.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startDate, $lte: endDate }
+      }
+    },
+    {
+      $lookup: {
+        from: 'cars', // collection name (not model name) must be lowercase & plural
+        localField: 'carID',
+        foreignField: '_id',
+        as: 'car'
+      }
+    },
+    {
+      $unwind: '$car'
+    },
+    {
+      $group: {
+        _id: '$car.name',
+        totalPriceAfterDiscount: { $sum: '$priceAfterDiscount' }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        perCar: {
+          $push: {
+            carName: '$_id',
+            totalPriceAfterDiscount: '$totalPriceAfterDiscount'
+          }
+        },
+        totalForAllCars: { $sum: '$totalPriceAfterDiscount' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        perCar: 1,
+        totalForAllCars: 1
+      }
+    }
+  ]);
+
+  res.status(200).json(result[0] || { perCar: [], totalForAllCars: 0 });
+});
 
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -163,7 +270,6 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
 
   res.send(pdfBuffer);
 });
-
 
 exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
   const { id } = req.params;

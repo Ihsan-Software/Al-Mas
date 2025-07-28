@@ -57,9 +57,6 @@ exports.createFineValidator = [
     .notEmpty()
     .withMessage("note required"),
 
-  check("image")
-    .optional(),
-
   validatorMiddleware,
 ];
 
@@ -112,11 +109,6 @@ exports.updateFineValidator = [
     .optional()
     .notEmpty()
     .withMessage("note required"),
-
-  check("image")
-    .optional()
-    .notEmpty()
-    .withMessage("Personal image required"),
   
   validatorMiddleware,
 ];
