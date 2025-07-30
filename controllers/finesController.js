@@ -1,48 +1,29 @@
-const { v4: uuidv4 } = require("uuid"); //for random image name id
-const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
 
 const ApiError = require("../utils/apiError");
 const Fines = require("../models/finesModel");
 const factory = require("./handlersFactory");
 
-// for image
-const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
-const deleteOldImage  = require("../middlewares/deleteOldImage");
 
-// use buffer from Memory Storage
-exports.resizeImage = asyncHandler(async (req, res, next) => {
-    if (!req.file) {
-        return next();
-    }
-    const filename = `Fine-${uuidv4()}-${Date.now()}.jpeg`;
-    await sharp(req.file.buffer)
-        .resize(600, 600)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
-        .toFile(`uploads/fines/${filename}`);
-
-    // save image in db
-    req.body.image = filename;
-    next();
-});
-
-// Execute multer middleware
-exports.uploadFineImage = uploadSingleImage("image");
-
-exports.deleteOldFineImage = deleteOldImage(Fines, 'image', 'fines');
 
 //  **** Admin CRUD ****
 
 // @desc    Get list of Fine
 // @route   GET /Fine
 // @access  Private/ Admin, Manager
-exports.getFines = factory.getAll(Fines);
+exports.getFines = factory.getAll(Fines,[
+    { path: 'carID', select: 'name' },
+    { path: 'tenantID', select: 'name' }
+  ],
+  'finePlace fineDate');
 
 // @desc    Get specific Fine by id
 // @route   GET /Fine/:id
 // @access  Private/ Admin, Manager
-exports.getFine = factory.getOne(Fines);
+exports.getFine = factory.getOne(Fines,[
+    { path: 'carID', select: 'name' },
+    { path: 'tenantID', select: 'name' }
+  ],'finePlace fineDate' );
 
 // @desc    Create Fine
 // @route   POST  /Fine

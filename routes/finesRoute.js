@@ -17,10 +17,7 @@ const {
   createFine,
   updateFine,
   deleteFine,
-  uploadFineImage,
-  resizeImage,
-  getFineUseName,
-  deleteOldFineImage
+  getFineUseName
 } = require("../controllers/finesController");
 
 const auth = require("../controllers/authController");
@@ -32,7 +29,7 @@ router.use(auth.allowedTo("admin"));
 
 router.route("/")
   .get(getFines)
-  .post(uploadFineImage, resizeImage, createFineValidator, createFine);
+  .post(createFineValidator, createFine);
 
 router.route("/search")
   .get(getFineUseNameValidator, getFineUseName)
@@ -40,7 +37,7 @@ router.route("/search")
 router
   .route("/:id")
   .get(getFineValidator, getFine)
-  .patch(uploadFineImage, deleteOldFineImage, resizeImage, updateFineValidator, updateFine)
+  .patch(updateFineValidator, updateFine)
   .delete(deleteFineValidator, deleteFine);
 
 module.exports = router;

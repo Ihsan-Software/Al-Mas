@@ -51,12 +51,12 @@ const finesSchema = new mongoose.Schema(
 );
 
 // Mongoose query middleware
-finesSchema.pre(/^find/, function (next) {
+/*finesSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'userID tenantID carID'
   });
   next();
-});
+});*/
 
 const setImageURL = (doc) => {
     if (doc.image && !doc.image.includes(`${process.env.BASE_URL}`)) {

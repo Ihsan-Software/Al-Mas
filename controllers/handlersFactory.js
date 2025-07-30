@@ -1,30 +1,39 @@
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 
-exports.getAll = (Model) => asyncHandler(async (req, res) => {
+exports.getAll = (Model, populationOpt, selectedFields) =>
+  asyncHandler(async (req, res) => {
+    let query = Model.find().select(selectedFields);
 
-  const documents = await Model.find();
-
-    res.status(200).json({results:documents.length , data: documents });
-  });
-
-
-
-exports.getOne = (Model, populationOpt) =>
-  asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
-    // 1) Build query
-    let query = Model.findById(id);
     if (populationOpt) {
       query = query.populate(populationOpt);
     }
 
-    // 2) Execute query
+    const documents = await query;
+
+    res.status(200).json({
+      results: documents.length,
+      data: documents
+    });
+  });
+
+
+
+exports.getOne = (Model, populationOpt, selectedFields) =>
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+
+    let query = Model.findById(id).select(selectedFields);
+    if (populationOpt) {
+      query = query.populate(populationOpt);
+    }
+
     const document = await query;
 
     if (!document) {
       return next(new ApiError(`No document for this id ${id}`, 404));
     }
+
     res.status(200).json({ data: document });
   });
 
