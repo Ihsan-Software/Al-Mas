@@ -215,6 +215,7 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
   res.status(200).json(result[0] || { perCar: [], totalForAllCars: 0 });
 });
 
+// use puppeteer
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const contract = await Contract.findById(id);
