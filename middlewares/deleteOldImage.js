@@ -20,7 +20,7 @@ const deleteOldImage = (Model, imageField, uploadFolder) =>
     }
     // for delete tenant images 
     if(imageField == 'personalImage'){
-      let names=['personalImage', 'personalDocumentsImagRequired', 'personalDocumentsImagOptional']
+      let names=['personalImage', 'personalDocumentsImagRequired']
       names.forEach((currentName) => {
         let oldImage = doc[currentName];
         oldImage = oldImage.replace(`${process.env.BASE_URL}/${uploadFolder}`, "");

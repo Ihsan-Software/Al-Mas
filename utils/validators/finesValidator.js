@@ -53,9 +53,7 @@ exports.createFineValidator = [
     .withMessage("price Paid required"),
 
   check("note")
-    .optional()
-    .notEmpty()
-    .withMessage("note required"),
+    .optional(),
 
   validatorMiddleware,
 ];
@@ -106,9 +104,7 @@ exports.updateFineValidator = [
     .withMessage("price Paid required"),
 
   check("note")
-    .optional()
-    .notEmpty()
-    .withMessage("note required"),
+    .optional(),
   
   validatorMiddleware,
 ];
