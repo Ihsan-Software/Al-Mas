@@ -23,7 +23,7 @@ exports.getFines = factory.getAll(Fines,[
 exports.getFine = factory.getOne(Fines,[
     { path: 'carID', select: 'name' },
     { path: 'tenantID', select: 'name' }
-  ],'finePlace fineDate' );
+  ],'-createdAt -updatedAt -__v');
 
 // @desc    Create Fine
 // @route   POST  /Fine
