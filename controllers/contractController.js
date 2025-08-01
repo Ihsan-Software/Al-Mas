@@ -295,7 +295,7 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
 
 
 exports.generateContractPDF = asyncHandler(async (req, res, next) => {
- 
+  
     const { id } = req.params;
   console.log('Using Puppeteer from:', require.resolve('puppeteer'));
 console.log(puppeteer.executablePath());
