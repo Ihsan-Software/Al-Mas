@@ -1,6 +1,7 @@
 const path = require('path');
 const ejs = require('ejs');
 const dayjs = require("dayjs");
+const fs = require("fs").promises;
 
 const puppeteer = require("puppeteer");
 
@@ -289,6 +290,45 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
     // Send rendered HTML to client
     res.set('Content-Type', 'text/html');
     res.send(html);
+});
+
+
+exports.generateContractPDF = asyncHandler(async (req, res, next) => {
+ 
+    const { id } = req.params;
+
+  const contract = await Contract.findById(id);
+  if (!contract) {
+    return res.status(404).json({ error: `No contract found with ID ${id}` });
+  }
+
+  const html = await ejs.renderFile(
+    path.join(__dirname, "../views", `${req.query.pdfName}.ejs`),
+    { contract }
+  );
+
+  const tempDir = path.join(__dirname, "../temp");
+  await fs.mkdir(tempDir, { recursive: true }); // ✅ ensure temp dir exists
+
+  const tempHtmlPath = path.join(tempDir, "template.html");
+  const outputPdfPath = path.join(tempDir, "output.pdf");
+
+  await fs.writeFile(tempHtmlPath, html); // ✅ write the rendered HTML to disk
+
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+
+  const page = await browser.newPage();
+  await page.goto(`file://${tempHtmlPath}`, { waitUntil: "networkidle0" });
+  await page.pdf({ path: outputPdfPath, format: "A4" });
+  await browser.close();
+
+  // Return the PDF to the frontend
+  res.download(outputPdfPath, "contract.pdf");
+
+    
 });
 
 /*

@@ -21,7 +21,8 @@ const {
   createPdfFile,
   sendHtmlPage,
   getInsurance,
-  getImportsPricesByDate
+  getImportsPricesByDate,
+  generateContractPDF
 } = require("../controllers/contractController");
 
 const auth = require("../controllers/authController");
@@ -42,7 +43,7 @@ router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
 
 router.route("/createPDF/:id")
-  .get(createPdfFile)
+  .get(generateContractPDF)
 
   router.route("/htmlPage/:id")
   .get(sendHtmlPage)
