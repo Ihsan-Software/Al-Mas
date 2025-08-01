@@ -43,7 +43,7 @@ router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
 
 router.route("/createPDF/:id")
-  .get(createPdfFile)
+  .get(generateContractPDF)
 
   router.route("/htmlPage/:id")
   .get(sendHtmlPage)

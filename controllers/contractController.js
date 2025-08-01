@@ -219,7 +219,6 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 // use puppeteer
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  console.log('Using Puppeteer from:', require.resolve('puppeteer'));
 
   const contract = await Contract.findById(id);
   if (!contract) {
@@ -298,7 +297,8 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
 exports.generateContractPDF = asyncHandler(async (req, res, next) => {
  
     const { id } = req.params;
-
+  console.log('Using Puppeteer from:', require.resolve('puppeteer'));
+console.log(puppeteer.executablePath());
   const contract = await Contract.findById(id);
   if (!contract) {
     return res.status(404).json({ error: `No contract found with ID ${id}` });
