@@ -5,7 +5,7 @@ dotenv.config({ path: 'config.env' })
 
 const app = require('./app');
 
-mongoose.connect(process.env.ATLAS_DATABASE).then(() => {
+mongoose.connect(process.env.LOCAL_DATABASE).then(() => {
     console.log("Connected To Database Success...🚀");
 })
 

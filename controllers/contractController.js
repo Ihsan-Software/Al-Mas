@@ -219,6 +219,8 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 // use puppeteer
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  console.log('Using Puppeteer from:', require.resolve('puppeteer'));
+
   const contract = await Contract.findById(id);
   if (!contract) {
     return next(new ApiError(`No contract found for ID ${id}`, 404));
