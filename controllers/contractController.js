@@ -239,36 +239,71 @@ const getBrowserInstance = async () => {
   }
 };
 
+let puppeteer;
+let executablePath;
+
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const contract = await Contract.findById(id);
   if (!contract) {
-    return next(new Error(`No contract found for ID ${id}`));
+    return next(new ApiError(`No contract found for ID ${id}`, 404));
   }
 
+  // Render EJS to HTML
   const html = await ejs.renderFile(
     path.join(__dirname, `../views/${req.query.pdfName}.ejs`),
     { contract }
   );
 
-  const browser = await getBrowserInstance();
-  const page = await browser.newPage();
+  if (!html) {
+    return next(new ApiError("Failed to render EJS template", 500));
+  }
 
-  await page.setContent(html, { waitUntil: 'networkidle0' });
+  // Select puppeteer and chromium path based on environment
+  if (process.env.NODE_ENV === "production") {
+    const chromium = require("chrome-aws-lambda");
+    puppeteer = require("puppeteer-core");
+    executablePath =
+      (await chromium.executablePath) || "/usr/bin/chromium-browser";
+  } else {
+    puppeteer = require("puppeteer");
+    executablePath = undefined; // puppeteer handles its own Chromium in dev
+  }
+
+  // Launch browser
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: true,
+    executablePath,
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({
+    width: 794,
+    height: 1123,
+    deviceScaleFactor: 1,
+  });
+
+  await page.setContent(html, { waitUntil: "networkidle0" });
 
   const pdfBuffer = await page.pdf({
     printBackground: true,
-    width: '210mm',
-    height: '297mm',
-    margin: { top: '0mm', bottom: '0mm', left: '0mm', right: '0mm' },
+    width: "210mm",
+    height: "297mm",
+    margin: {
+      top: "0mm",
+      bottom: "0mm",
+      left: "0mm",
+      right: "0mm",
+    },
   });
 
   await browser.close();
 
   res.set({
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': 'attachment; filename=form.pdf',
+    "Content-Type": "application/pdf",
+    "Content-Disposition": "attachment; filename=form.pdf",
   });
 
   res.send(pdfBuffer);
