@@ -217,84 +217,58 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 });
 
 // use puppeteer
+const isProduction = process.env.NODE_ENV === 'production';
+
+const getBrowserInstance = async () => {
+  if (isProduction) {
+    const chromium = require('chrome-aws-lambda');
+    const puppeteer = require('puppeteer-core');
+
+    return await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
+  } else {
+    const puppeteer = require('puppeteer');
+    return await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+  }
+};
 
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const contract = await Contract.findById(id);
   if (!contract) {
-    return next(new ApiError(`No contract found for ID ${id}`, 404));
+    return next(new Error(`No contract found for ID ${id}`));
   }
 
-  // Render EJS template to HTML
   const html = await ejs.renderFile(
     path.join(__dirname, `../views/${req.query.pdfName}.ejs`),
     { contract }
   );
 
-  if (!html) {
-    return next(new ApiError("Failed to render EJS template", 500));
-  }
-
-  // Determine environment
-  const isProd = process.env.NODE_ENV === "production";
-  let puppeteer;
-  let launchOptions = {};
-
-  if (isProd) {
-    const chromium = require("chrome-aws-lambda");
-    puppeteer = require("puppeteer-core");
-
-    launchOptions = {
-      args: chromium.args,
-      executablePath: await chromium.executablePath || '/usr/bin/google-chrome',
-      headless: chromium.headless,
-    };
-
-    console.log("Using puppeteer-core + chrome-aws-lambda");
-    console.log("Chromium path:", launchOptions.executablePath);
-  } else {
-    puppeteer = require("puppeteer");
-
-    launchOptions = {
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    };
-
-    console.log("Using puppeteer (dev)");
-    console.log("Chromium path:", puppeteer.executablePath());
-  }
-
-  // Launch browser and create PDF
-  const browser = await puppeteer.launch(launchOptions);
+  const browser = await getBrowserInstance();
   const page = await browser.newPage();
 
-  await page.setViewport({
-    width: 794,
-    height: 1123,
-    deviceScaleFactor: 1,
-  });
-
-  await page.setContent(html, { waitUntil: "networkidle0" });
+  await page.setContent(html, { waitUntil: 'networkidle0' });
 
   const pdfBuffer = await page.pdf({
     printBackground: true,
-    width: "210mm",
-    height: "297mm",
-    margin: {
-      top: "0mm",
-      bottom: "0mm",
-      left: "0mm",
-      right: "0mm",
-    },
+    width: '210mm',
+    height: '297mm',
+    margin: { top: '0mm', bottom: '0mm', left: '0mm', right: '0mm' },
   });
 
   await browser.close();
 
-  // Send the PDF as a response
   res.set({
-    "Content-Type": "application/pdf",
-    "Content-Disposition": "attachment; filename=form.pdf",
+    'Content-Type': 'application/pdf',
+    'Content-Disposition': 'attachment; filename=form.pdf',
   });
 
   res.send(pdfBuffer);
