@@ -3,7 +3,7 @@ const ejs = require('ejs');
 const dayjs = require("dayjs");
 const fs = require("fs").promises;
 
-const puppeteer = require("puppeteer");
+//const puppeteer = require("puppeteer");
 
 const asyncHandler = require("express-async-handler");
 
@@ -217,6 +217,7 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 });
 
 // use puppeteer
+
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
@@ -235,19 +236,43 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
     return next(new ApiError("Failed to render EJS template", 500));
   }
 
-  // Launch Puppeteer and create PDF
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    executablePath: puppeteer.executablePath()
-    // Don't include executablePath unless you're using puppeteer-core
-  });
+  // Determine environment
+  const isProd = process.env.NODE_ENV === "production";
+  let puppeteer;
+  let launchOptions = {};
 
+  if (isProd) {
+    const chromium = require("chrome-aws-lambda");
+    puppeteer = require("puppeteer-core");
+
+    launchOptions = {
+      args: chromium.args,
+      executablePath: await chromium.executablePath || '/usr/bin/google-chrome',
+      headless: chromium.headless,
+    };
+
+    console.log("Using puppeteer-core + chrome-aws-lambda");
+    console.log("Chromium path:", launchOptions.executablePath);
+  } else {
+    puppeteer = require("puppeteer");
+
+    launchOptions = {
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    };
+
+    console.log("Using puppeteer (dev)");
+    console.log("Chromium path:", puppeteer.executablePath());
+  }
+
+  // Launch browser and create PDF
+  const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
+
   await page.setViewport({
     width: 794,
     height: 1123,
-    deviceScaleFactor: 1
+    deviceScaleFactor: 1,
   });
 
   await page.setContent(html, { waitUntil: "networkidle0" });
@@ -260,8 +285,8 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
       top: "0mm",
       bottom: "0mm",
       left: "0mm",
-      right: "0mm"
-    }
+      right: "0mm",
+    },
   });
 
   await browser.close();
@@ -269,7 +294,7 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
   // Send the PDF as a response
   res.set({
     "Content-Type": "application/pdf",
-    "Content-Disposition": "attachment; filename=form.pdf"
+    "Content-Disposition": "attachment; filename=form.pdf",
   });
 
   res.send(pdfBuffer);
