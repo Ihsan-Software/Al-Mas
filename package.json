@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "postinstall": "echo 'Chromium will be loaded by chrome-aws-lambda in production'"
   },
   "keywords": [],
   "author": "",
