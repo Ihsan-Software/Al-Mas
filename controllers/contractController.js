@@ -438,7 +438,10 @@ exports.sendEjsFile = asyncHandler(async (req, res, next) => {
 
 exports.createPdfFromEjsFile = asyncHandler(async (req, res, next) => {
 
-    const browser = await puppeteer.launch(); 
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }); 
     const page = await browser.newPage();
 
     await page.goto(`${req.protocol}://${req.get('host')}`+`/contract/sendEjsFile/${req.params.id}?pdfName=${req.query.pdfName}`,{
