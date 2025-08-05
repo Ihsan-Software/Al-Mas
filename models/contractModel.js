@@ -100,6 +100,10 @@ const contractSchema = new mongoose.Schema(
         type: String,
         trim: true,
    },
+   isReturn:{
+    type: Boolean,
+    default: false
+   }
 
 },
 { timestamps: true }

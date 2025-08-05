@@ -45,18 +45,22 @@ const bookingSchema = new mongoose.Schema(
     },
     BookingNumber: {
         type: Number,
-    }
+    },
+    governorate: {
+      type: String,
+      required: [true, "governorate required"],
+    },
 },
 { timestamps: true }
 );
 
 // Mongoose query middleware
-bookingSchema.pre(/^find/, function (next) {
+/*bookingSchema.pre(/^find$/, function (next) {
   this.populate({
     path: 'userID tenantID carID'
   });
   next();
-});
+});*/
 const Booking = mongoose.model("Booking", bookingSchema);
 
 module.exports = Booking;

@@ -116,7 +116,8 @@ exports.getInsurance = asyncHandler(async (req, res) => {
   const result = await Contract.aggregate([
     {
       $match: {
-        createdAt: { $lte: elevenDaysAgo }
+        createdAt: { $lte: elevenDaysAgo },
+        isReturn: false 
       }
     },
     // Lookup tenant info
