@@ -22,13 +22,17 @@ const {
   sendHtmlPage,
   getInsurance,
   getImportsPricesByDate,
-  generateContractPDF
+  generateContractPDF,
+  sendEjsFile,
+  createPdfFromEjsFile
 } = require("../controllers/contractController");
 
 const auth = require("../controllers/authController");
 const router = express.Router();
 
 // FOR ADMIN
+router.route("/sendEjsFile/:id")
+  .get(sendEjsFile)
 router.use(auth.protect);
 router.use(auth.allowedTo("admin"));
 
@@ -42,9 +46,10 @@ router.route('/getImportsUseDate').get(getImportsPricesByDate);
 router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
 
-router.route("/createPDF/:id")
-  .get(createPdfFile)
 
+router.route("/createPDF/:id")
+  .get(createPdfFromEjsFile)
+  
   router.route("/htmlPage/:id")
   .get(sendHtmlPage)
 

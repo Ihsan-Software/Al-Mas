@@ -2,6 +2,7 @@ const path = require('path');
 const ejs = require('ejs');
 const dayjs = require("dayjs");
 const fs = require("fs").promises;
+const puppeteer = require('puppeteer');
 
 //const puppeteer = require("puppeteer");
 
@@ -220,7 +221,7 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 // use puppeteer
 const isProduction = process.env.NODE_ENV === 'production';
 
-const getBrowserInstance = async () => {
+/*const getBrowserInstance = async () => {
   if (isProduction) {
     const chromium = require('chrome-aws-lambda');
     const puppeteer = require('puppeteer-core');
@@ -241,7 +242,7 @@ const getBrowserInstance = async () => {
 };
 
 let puppeteer;
-let executablePath;
+let executablePath;*/
 
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -425,6 +426,34 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
 
 
 
+exports.sendEjsFile = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const contract = await Contract.findById(id);
+  if (!contract) {
+    return next(new ApiError(`No contract found for ID ${id}`, 404));
+  }
 
+ res.render(`${req.query.pdfName}.ejs`, { contract });
+});
+
+exports.createPdfFromEjsFile = asyncHandler(async (req, res, next) => {
+
+    const browser = await puppeteer.launch(); 
+    const page = await browser.newPage();
+
+    await page.goto(`${req.protocol}://${req.get('host')}`+`/contract/sendEjsFile/${req.params.id}?pdfName=${req.query.pdfName}`,{
+      waitUntil:'networkidle2'
+    })
+    await page.setViewport({width:1680, height:1050})
+
+    const pdf = await page.pdf()
+    await browser.close()
+      res.set({
+    "Content-Type": "application/pdf",
+    "Content-Disposition": `inline; filename="contract_${req.params.id}.pdf"`,
+  });
+
+  res.send(pdf);
+});
 
 
