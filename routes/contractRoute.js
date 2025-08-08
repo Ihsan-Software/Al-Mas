@@ -22,9 +22,6 @@ const {
   getImportsPricesByDate,
   sendHtmlPage,
   sendEjsFile,
-  createPdfFile,
-  generateContractPDFFromHtml,
-  createPdfFileUseCore,
   createPdfFromEjsFile
 } = require("../controllers/contractController");
 
@@ -51,14 +48,6 @@ router.route('/getImportsUseDate').get(getImportsPricesByDate);
 router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
 
-router.route("/createPdfFile/:id")
-  .get(createPdfFile)
-
-router.route("/generateContractPDFFromHtml/:id")
-  .get(generateContractPDFFromHtml)
-
-router.route("/createPdfFileUseCore/:id")
-  .get(createPdfFileUseCore)
 
 router.route("/createPdfFromEjsFile/:id")
   .get(createPdfFromEjsFile)

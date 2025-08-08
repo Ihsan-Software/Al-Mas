@@ -57,6 +57,9 @@ exports.createBookingValidator = [
     .notEmpty()
     .withMessage("Remaining Price required"),
 
+  check("governorate")
+    .notEmpty()
+    .withMessage("governorate required"),
 
   validatorMiddleware,
 ];
@@ -111,6 +114,10 @@ exports.updateBookingValidator = [
     .notEmpty()
     .withMessage("Remaining Price required"),
     
+  check("governorate")
+    .optional()
+    .notEmpty()
+    .withMessage("governorate required"),
   validatorMiddleware,
 ];
 ;
