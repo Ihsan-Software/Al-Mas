@@ -14,8 +14,8 @@ const Car = require("../models/carModel")
 // @access  Private/ Admin, Manager
 exports.getBookings = factory.getAll(Booking,[
     { path: 'carID', select: 'name' },
-    { path: 'tenantID', select: 'id' }
-  ],'bookingDate ');
+    { path: 'tenantID', select: 'name' }
+  ],'bookingDate governorate');
 
 // @desc    Get specific Booking by id
 // @route   GET /Booking/:id
