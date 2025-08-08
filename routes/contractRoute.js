@@ -18,12 +18,13 @@ const {
   updateContract,
   deleteContract,
   getContractUseName,
-  createPdfFile,
-  sendHtmlPage,
   getInsurance,
   getImportsPricesByDate,
-  generateContractPDF,
+  sendHtmlPage,
   sendEjsFile,
+  createPdfFile,
+  generateContractPDFFromHtml,
+  createPdfFileUseCore,
   createPdfFromEjsFile
 } = require("../controllers/contractController");
 
@@ -33,6 +34,10 @@ const router = express.Router();
 // FOR ADMIN
 router.route("/sendEjsFile/:id")
   .get(sendEjsFile)
+
+router.route("/htmlPage/:id")
+  .get(sendHtmlPage)
+
 router.use(auth.protect);
 router.use(auth.allowedTo("admin"));
 
@@ -46,12 +51,18 @@ router.route('/getImportsUseDate').get(getImportsPricesByDate);
 router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
 
+router.route("/createPdfFile/:id")
+  .get(createPdfFile)
 
-router.route("/createPDF/:id")
+router.route("/generateContractPDFFromHtml/:id")
+  .get(generateContractPDFFromHtml)
+
+router.route("/createPdfFileUseCore/:id")
+  .get(createPdfFileUseCore)
+
+router.route("/createPdfFromEjsFile/:id")
   .get(createPdfFromEjsFile)
-  
-  router.route("/htmlPage/:id")
-  .get(sendHtmlPage)
+
 
 router
   .route("/:id")

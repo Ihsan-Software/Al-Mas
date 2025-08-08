@@ -2,9 +2,11 @@ const path = require('path');
 const ejs = require('ejs');
 const dayjs = require("dayjs");
 const fs = require("fs").promises;
-const puppeteer = require('puppeteer');
 
-//const puppeteer = require("puppeteer");
+const chromium = require('chrome-aws-lambda');
+//const puppeteer = require('puppeteer-core');
+
+const puppeteer = require("puppeteer");
 
 const asyncHandler = require("express-async-handler");
 
@@ -219,30 +221,6 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 });
 
 // use puppeteer
-const isProduction = process.env.NODE_ENV === 'production';
-
-/*const getBrowserInstance = async () => {
-  if (isProduction) {
-    const chromium = require('chrome-aws-lambda');
-    const puppeteer = require('puppeteer-core');
-
-    return await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    });
-  } else {
-    const puppeteer = require('puppeteer');
-    return await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-  }
-};
-
-let puppeteer;
-let executablePath;*/
 
 exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -272,7 +250,8 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
     puppeteer = require("puppeteer");
     executablePath = undefined; // puppeteer handles its own Chromium in dev
   }
-
+  console.log(`chromium is: ${chromium}`)
+  console.log(`chromium.executablePath: ${chromium.executablePath}`)
   // Launch browser
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -329,8 +308,8 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
     res.send(html);
 });
 
-
-exports.generateContractPDF = asyncHandler(async (req, res, next) => {
+// html
+exports.generateContractPDFFromHtml = asyncHandler(async (req, res, next) => {
   
     const { id } = req.params;
   console.log('Using Puppeteer from:', require.resolve('puppeteer'));
@@ -369,8 +348,8 @@ console.log(puppeteer.executablePath());
     
 });
 
-/*
-exports.createPdfFile = asyncHandler(async (req, res, next) => {
+// use puppeteer-core 
+exports.createPdfFileUseCore = asyncHandler(async (req, res, next) => {
 
   const { id } = req.params;
   const contract = await Contract.findById(id);
@@ -379,11 +358,13 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
   const html = await ejs.renderFile(path.join(__dirname, `../views/${req.query.pdfName}.ejs`), {contract});
   if (!html) return next(new ApiError('Failed to render EJS template', 500));
 
+  const executablePath = await chromium.executablePath;
+  console.log('Chromium executable path:', executablePath);
   // Launch Puppeteer
   const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: chromium.args,
+    executablePath,
+    headless: chromium.headless,
   });
 
   const page = await browser.newPage();
@@ -420,7 +401,7 @@ exports.createPdfFile = asyncHandler(async (req, res, next) => {
 
   res.send(pdfBuffer);
 });
-*/
+
 
 
 
@@ -438,11 +419,9 @@ exports.sendEjsFile = asyncHandler(async (req, res, next) => {
 
 exports.createPdfFromEjsFile = asyncHandler(async (req, res, next) => {
 
-    const chromiumPath = '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.168/chrome-linux64/chrome';
-
+    //const chromiumPath = '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.168/chrome-linux64/chrome';
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: chromiumPath,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
