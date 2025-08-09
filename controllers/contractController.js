@@ -147,7 +147,7 @@ exports.getInsurance = asyncHandler(async (req, res) => {
 
     {
       $project: {
-        _id: 0,
+        _id: 1, // Contract ID
         tenantName: '$tenant.name',
         carName: '$car.name',
         insuranceType: 1,
@@ -156,7 +156,7 @@ exports.getInsurance = asyncHandler(async (req, res) => {
     }
   ]);
 
-  res.status(200).json({result});
+  res.status(200).json({ result });
 });
 
 
