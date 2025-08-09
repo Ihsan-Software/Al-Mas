@@ -22,12 +22,20 @@ const Car = require("../models/carModel")
 // @desc    Get list of Contract
 // @route   GET /Contract
 // @access  Private/ Admin, Manager
-exports.getContracts = factory.getAll(Contract);
+exports.getContracts = factory.getAll(Contract,[
+    { path: 'carID' },
+    { path: 'tenantID'},
+    { path: 'userID'}
+  ]);
 
 // @desc    Get specific Contract by id
 // @route   GET /Contract/:id
 // @access  Private/ Admin, Manager
-exports.getContract = factory.getOne(Contract);
+exports.getContract = factory.getOne(Contract,[
+    { path: 'carID' },
+    { path: 'tenantID'},
+    { path: 'userID'}
+  ]);
 
 // @desc    Create Contract
 // @route   POST  /Contract
@@ -98,7 +106,7 @@ exports.deleteContract = factory.deleteOne(Contract);
 exports.getContractUseName = asyncHandler(async (req, res, next) => {
  const name = req.query.name|| " ";
 
-  const allContracts = await Contract.find();
+  const allContracts = await Contract.find().populate("tenantID", "name")
 
   // Now filter based on populated `userID.name`
   const filteredContracts = allContracts.filter(contract =>
@@ -159,6 +167,8 @@ exports.getInsurance = asyncHandler(async (req, res) => {
   res.status(200).json({ result });
 });
 
+
+exports.getOneInsurance = factory.getOne(Contract,'',' governorate insuranceType');
 
 // imports 
 exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {

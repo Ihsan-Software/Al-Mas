@@ -19,6 +19,7 @@ const {
   deleteContract,
   getContractUseName,
   getInsurance,
+  getOneInsurance,
   getImportsPricesByDate,
   sendHtmlPage,
   sendEjsFile,
@@ -43,6 +44,7 @@ router.route("/")
 .post(createContractValidator, createContract);
 
 router.route('/getInsurance').get(getInsurance);
+router.route('/getOneInsurance/:id').get(getOneInsurance);
 router.route('/getImportsUseDate').get(getImportsPricesByDate);
 
 router.route("/search")

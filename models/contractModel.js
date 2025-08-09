@@ -110,12 +110,12 @@ const contractSchema = new mongoose.Schema(
 );
 
 // Mongoose query middleware
-contractSchema.pre(/^find/, function (next) {
+/*contractSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'userID tenantID carID'
   });
   next();
-});
+});*/
 const Contract = mongoose.model("Contract", contractSchema);
 
 module.exports = Contract;
