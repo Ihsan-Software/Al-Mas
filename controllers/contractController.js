@@ -178,10 +178,19 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
     return res.status(400).json({ message: 'Date is required in query' });
   }
 
-  // Parse date range (same day from 00:00 to 23:59)
+  // Start of month
   const startDate = new Date(date);
-  const endDate = new Date(date);
+  startDate.setDate(1); // first day of month
+  startDate.setHours(0, 0, 0, 0);
+
+  // End of month
+  const endDate = new Date(startDate);
+  endDate.setMonth(endDate.getMonth() + 1); // go to next month
+  endDate.setDate(0); // last day of current month
   endDate.setHours(23, 59, 59, 999);
+
+  console.log(startDate);
+  console.log(endDate);
 
   const result = await Contract.aggregate([
     {
@@ -201,8 +210,8 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
     {
       $group: {
         _id: '$car.name',
-        carStatus: { $first: 'تاجير' }, // single status
-        contractDate: { $first: '$contractDate' }, // one date
+        carStatus: { $first: 'تاجير' },
+        contractDate: { $first: '$contractDate' },
         totalPriceAfterDiscount: { $sum: '$priceAfterDiscount' }
       }
     },
@@ -231,6 +240,7 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
 
   res.status(200).json(result[0] || { perCar: [], totalForAllCars: 0 });
 });
+
 
 
 exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
