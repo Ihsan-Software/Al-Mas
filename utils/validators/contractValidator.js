@@ -82,10 +82,8 @@ exports.createContractValidator = [
 
   check("phone")
     .optional()
-    .notEmpty()
-    .withMessage("phone required")
-    .isMobilePhone(["ar-IQ"])
-    .withMessage("Invalid phone number only accepted Iraq Phone numbers"),
+    .isLength({min:11, max: 15 }) 
+    .withMessage('Phone number must be between 11 and 15 digits'),
 
   check("address")
     .optional()
@@ -172,10 +170,8 @@ exports.updateContractValidator = [
 
   check("phone")
     .optional()
-    .notEmpty()
-    .withMessage("phone required")
-    .isMobilePhone(["ar-IQ"])
-    .withMessage("Invalid phone number only accepted Iraq Phone numbers"),
+    .isLength({min:11, max: 15 }) 
+    .withMessage('Phone number must be between 11 and 15 digits'),
 
   check("address")
     .optional()

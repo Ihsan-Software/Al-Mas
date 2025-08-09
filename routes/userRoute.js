@@ -34,7 +34,6 @@ const router = express.Router();
 router.use(auth.protect);
 
 router.get("/getMyInfo", getLoggedUserData, getUser);
-router.patch("/updateMyPassword", updateLoggedUserPasswordValidator,updateLoggedUserPassword);
 router.patch("/updateMyInfo",updateLoggedUserValidator, updateLoggedUserData);
 router.patch("/updateMyImage",uploadUserImage, deleteOldUserImage, resizeImage, updateLoggedUserData);
 router.delete("/deleteMyAccount", deleteLoggedUserData);
@@ -43,9 +42,10 @@ router.delete("/deleteMyAccount", deleteLoggedUserData);
 // FOR ADMIN
 router.use(auth.allowedTo("admin"));
 router.route("/")
-  .get(getUsers)
-  .post(uploadUserImage, resizeImage, createUserValidator, createUser);
+.get(getUsers)
+.post(uploadUserImage, resizeImage, createUserValidator, createUser);
 
+router.patch("/updateUserPassword/:id", updateLoggedUserPasswordValidator,updateLoggedUserPassword);
 
 router
   .route("/:id")

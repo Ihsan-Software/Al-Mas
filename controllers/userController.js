@@ -38,7 +38,7 @@ exports.deleteOldUserImage = deleteOldImage(User, 'image', 'users');
 // @desc    Get list of users
 // @route   GET /users
 // @access  Private/ Admin
-exports.getUsers = factory.getAll(User);
+exports.getUsers = factory.getAll(User,'',' -password -createdAt -updatedAt -__v');
 
 // @desc    Get specific user by id
 // @route   GET /users/:id
@@ -77,7 +77,7 @@ exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
 exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
   // 1) Update user password based user payload (req.user._id)
     const user = await User.findByIdAndUpdate(
-        req.user._id,
+        req.params.id,
         {
         password: await bcrypt.hash(req.body.newPassword, 12),
         },
@@ -88,9 +88,7 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
     );
 
     // 2) Generate token
-    const token = createToken(user._id);
-
-    res.status(200).json({ data: user, token });
+    res.status(200).json({ data: user });
 });
 
 

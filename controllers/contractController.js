@@ -156,7 +156,7 @@ exports.getInsurance = asyncHandler(async (req, res) => {
     }
   ]);
 
-  res.status(200).json(result);
+  res.status(200).json({result});
 });
 
 
@@ -181,18 +181,18 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
     },
     {
       $lookup: {
-        from: 'cars', // collection name (not model name) must be lowercase & plural
+        from: 'cars',
         localField: 'carID',
         foreignField: '_id',
         as: 'car'
       }
     },
-    {
-      $unwind: '$car'
-    },
+    { $unwind: '$car' },
     {
       $group: {
         _id: '$car.name',
+        carStatus: { $first: 'تاجير' }, // single status
+        contractDate: { $first: '$contractDate' }, // one date
         totalPriceAfterDiscount: { $sum: '$priceAfterDiscount' }
       }
     },
@@ -202,6 +202,8 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
         perCar: {
           $push: {
             carName: '$_id',
+            carStatus: '$carStatus',
+            contractDate: '$contractDate',
             totalPriceAfterDiscount: '$totalPriceAfterDiscount'
           }
         },
@@ -243,12 +245,22 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
 
 exports.sendEjsFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  let gg
   const contract = await Contract.findById(id);
   if (!contract) {
     return next(new ApiError(`No contract found for ID ${id}`, 404));
   }
+  if(req.query.pdfName=='contract' && !contract.driverName){
+    gg = 'contract1'
+  }
+  else if(req.query.pdfName=='contract' && contract.driverName){
+    gg = 'contract2'
+  }
+  else{
+    gg = 'invoice'
+  }
 
- res.render(`${req.query.pdfName}.ejs`, { contract });
+ res.render(`${gg}.ejs`, { contract });
 });
 
 exports.createPdfFromEjsFile = asyncHandler(async (req, res, next) => {
