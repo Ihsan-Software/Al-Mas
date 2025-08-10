@@ -25,7 +25,9 @@ exports.createCarValidator = [
   check("chassisNumber")
     .notEmpty()
     .withMessage("Chassis number required"),
-
+  check("dailyPrice")
+    .notEmpty()
+    .withMessage("daily Price required"),
   check("walkingCounter")
     .notEmpty()
     .withMessage("Walking counter required"),
@@ -37,6 +39,7 @@ exports.createCarValidator = [
   check("image")
     .notEmpty()
     .withMessage("image required"),
+  check("temporarilyDeleted").optional(),
 
   validatorMiddleware,
 ];
@@ -76,7 +79,10 @@ check("chassisNumber")
   .optional()
   .notEmpty()
   .withMessage("Chassis number required"),
-
+  check("dailyPrice")
+    .optional()
+    .notEmpty()
+    .withMessage("daily Price required"),
 check("walkingCounter")
   .optional()
   .notEmpty()
@@ -91,7 +97,7 @@ check("image")
   .optional()
   .notEmpty()
   .withMessage("Image required"),
-  
+  check("temporarilyDeleted").optional(),
   validatorMiddleware,
 ];
 ;

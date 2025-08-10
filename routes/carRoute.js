@@ -26,19 +26,21 @@ const {
 const auth = require("../controllers/authController");
 const router = express.Router();
 
-// FOR ADMIN
 router.use(auth.protect);
-router.use(auth.allowedTo("admin"));
 
-router.route("/")
-  .get(getCars)
-  .post(uploadCarImage, resizeImage, createCarValidator, createCar);
-
+// FOR manager
+router.route("/").get(getCars)
+router.route("/:id").get(getCarValidator, getCar)
 router.route("/search")
   .get(getCarUseNameValidator, getCarUseName)
+
+// FOR ADMIN
+router.use(auth.allowedTo("admin"));
+
+router.route("/").post(uploadCarImage, resizeImage, createCarValidator, createCar);
+
 router
   .route("/:id")
-  .get(getCarValidator, getCar)
   .patch(uploadCarImage, deleteOldCarImage, resizeImage, updateCarValidator, updateCar)
   .delete(deleteCarValidator, deleteCar);
 

@@ -19,10 +19,6 @@ const contractSchema = new mongoose.Schema(
       required: [true, "user ID required"],
     },
     // contract details
-    dailyPrice: {
-        type: Number,
-        required: [true, "Daily price required"],
-    },
     overtimeCost: {
         type: Number,
         required: [true, "Overtime cost  required"],

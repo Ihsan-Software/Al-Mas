@@ -38,12 +38,12 @@ exports.deleteOldUserImage = deleteOldImage(User, 'image', 'users');
 // @desc    Get list of users
 // @route   GET /users
 // @access  Private/ Admin
-exports.getUsers = factory.getAll(User,'',' -password -createdAt -updatedAt -__v');
+exports.getUsers = factory.getAll(User,'',' -temporarilyDeleted -password -createdAt -updatedAt -__v');
 
 // @desc    Get specific user by id
 // @route   GET /users/:id
 // @access  Private/ Admin
-exports.getUser = factory.getOne(User,'',' -password -createdAt -updatedAt -__v');
+exports.getUser = factory.getOne(User,'','-temporarilyDeleted  -password -createdAt -updatedAt -__v');
 
 // @desc    Create user
 // @route   POST  /users

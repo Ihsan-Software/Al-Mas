@@ -32,6 +32,10 @@ const carSchema = new mongoose.Schema(
         trim: true,
         required: [true, "Chassis number required"],
     },
+    dailyPrice: {
+        type: Number,
+        required: [true, "Daily price required"],
+    },
     walkingCounter: {
         type: String,
         trim: true,
@@ -50,7 +54,11 @@ const carSchema = new mongoose.Schema(
     type: String, 
     enum: ['متاحة', 'محجوزة', 'مؤجرة', 'تحت الصيانة','غير متاحة'], 
     default: 'متاحة' 
-  }
+  },
+    temporarilyDeleted:{
+        type: Boolean,
+        default: false
+    }
 
 },
 { timestamps: true }
