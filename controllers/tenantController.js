@@ -82,19 +82,19 @@ exports.deleteOldTenantImage = deleteOldImage(Tenant, 'personalImage', 'tenant')
 exports.getTenants = asyncHandler(async (req, res) => {
   let tenants
   if (req.query.isBlocked){
-     tenants = await Tenant.find({isBlocked:req.query.isBlocked});
+     tenants = await Tenant.find({isBlocked:req.query.isBlocked,temporarilyDeleted: false }).select('id name houseLocation phone isBlocked');
   }
   else{
-     tenants = await Tenant.find().sort({ isBlocked: -1 });
+     tenants = await Tenant.find({temporarilyDeleted: false }).select('id name houseLocation phone isBlocked').sort({ isBlocked: 1 });
   }
-    res.status(200).json({data: tenants });
+    res.status(200).json({results:tenants.length, data: tenants });
   });
 
 
 // @desc    Get specific Tenant by id
 // @route   GET /tenant/:id
 // @access  Private/ Admin, Manager
-exports.getTenant = factory.getOne(Tenant);
+exports.getTenant = factory.getOne(Tenant,'',' -createdAt -updatedAt -__v');
 
 // @desc    Create tenant
 // @route   POST  /tenant
@@ -119,7 +119,7 @@ exports.deleteTenant = factory.deleteOne(Tenant);
 exports.getTenantUseName = asyncHandler(async (req, res, next) => {
 
     // 1) Build query
-    const tenant = await Tenant.findOne({name:req.query.name});
+    const tenant = await Tenant.findOne({name:req.query.name}).select('-createdAt -updatedAt -__v');
 
     if (!tenant) {
       return next(new ApiError(`No tenant for this name: ${req.query.name}`, 404));

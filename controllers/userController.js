@@ -43,7 +43,7 @@ exports.getUsers = factory.getAll(User,'',' -temporarilyDeleted -password -creat
 // @desc    Get specific user by id
 // @route   GET /users/:id
 // @access  Private/ Admin
-exports.getUser = factory.getOne(User,'','-temporarilyDeleted  -password -createdAt -updatedAt -__v');
+exports.getUser = factory.getOne(User,'','  -password -createdAt -updatedAt -__v');
 
 // @desc    Create user
 // @route   POST  /users

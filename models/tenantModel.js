@@ -102,8 +102,11 @@ const tenantSchema = new mongoose.Schema(
    isBlocked:{
     type: Boolean,
     default: false
-   }
-
+   },
+    temporarilyDeleted:{
+        type: Boolean,
+        default: false
+    }
 },
 { timestamps: true }
 );

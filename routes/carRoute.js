@@ -30,9 +30,9 @@ router.use(auth.protect);
 
 // FOR manager
 router.route("/").get(getCars)
-router.route("/:id").get(getCarValidator, getCar)
 router.route("/search")
   .get(getCarUseNameValidator, getCarUseName)
+router.route("/:id").get(getCarValidator, getCar)
 
 // FOR ADMIN
 router.use(auth.allowedTo("admin"));
