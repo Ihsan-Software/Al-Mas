@@ -11,7 +11,7 @@ const factory = require("./handlersFactory");
 // @desc    Get list of Fine
 // @route   GET /Fine
 // @access  Private/ Admin, Manager
-exports.getFines = factory.getAll(Fines,[
+exports.getFines = factory.getAllDocWthNoRelation(Fines,[
     { path: 'carID', select: 'name' },
     { path: 'tenantID', select: 'name' }
   ],
@@ -48,7 +48,11 @@ exports.deleteFine = factory.deleteOne(Fines);
 exports.getFineUseName = asyncHandler(async (req, res, next) => {
  const name = req.query.name|| " ";
 
-  const allFines = await Fines.find();
+  const allFines = await Fines.find().populate([
+    { path: 'tenantID' },
+    { path: 'carID'},
+    { path: 'userID'}
+  ]);
 
   // Now filter based on populated `userID.name`
   const filteredFines = allFines.filter(fines =>
