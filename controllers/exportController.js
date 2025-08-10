@@ -10,7 +10,7 @@ const factory = require("./handlersFactory");
 // @desc    Get list of Exports
 // @route   GET /exports
 // @access  Private / Admin, Manager
-exports.getExports = factory.getAll(Export);
+exports.getExports = factory.getAllDocWthNoRelation(Export);
 
 // @desc    Get specific Export by ID
 // @route   GET /exports/:id
@@ -40,19 +40,25 @@ exports.getExportsByDate = asyncHandler(async (req, res) => {
        exports = await Export.find();
     }
     else{
-      // Convert to Date objects
-      const start = new Date(dateQueryParam);
-      const end = new Date(dateQueryParam);
-      end.setHours(23, 59, 59, 999); // end of the same day
-    
-       exports = await Export.find({
-        createdAt: {
-          $gte: start,
-          $lte: end
-        }
-      });
+          // Convert to Date objects
+          const startDate = new Date(dateQueryParam);
+          startDate.setDate(1); // first day of month
+          startDate.setHours(0, 0, 0, 0);
 
-    }
+          // End of month
+          const endDate = new Date(startDate);
+          endDate.setMonth(endDate.getMonth() + 1); // go to next month
+          endDate.setDate(0); // last day of current month
+          endDate.setHours(23, 59, 59, 999);
+    
+          exports = await Export.find({
+              createdAt: {
+                $gte: startDate,
+                $lte: endDate
+              }
+            });
+
+          }
 
 
   res.status(200).json({
