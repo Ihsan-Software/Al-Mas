@@ -17,7 +17,21 @@ exports.getAll = (Model, populationOpt, selectedFields) =>
     });
   });
 
+exports.getAllDocWthNoRelation = (Model, populationOpt, selectedFields) =>
+  asyncHandler(async (req, res) => {
+    let query = Model.find().select(selectedFields);
 
+    if (populationOpt) {
+      query = query.populate(populationOpt);
+    }
+
+    const documents = await query;
+
+    res.status(200).json({
+      results: documents.length,
+      data: documents
+    });
+  });
 
 exports.getOne = (Model, populationOpt, selectedFields) =>
   asyncHandler(async (req, res, next) => {

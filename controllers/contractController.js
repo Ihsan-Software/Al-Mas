@@ -22,20 +22,15 @@ const Car = require("../models/carModel")
 // @desc    Get list of Contract
 // @route   GET /Contract
 // @access  Private/ Admin, Manager
-exports.getContracts = factory.getAll(Contract,[
-    { path: 'carID' },
-    { path: 'tenantID'},
-    { path: 'userID'}
-  ]);
+exports.getContracts = factory.getAllDocWthNoRelation(Contract,[
+    { path: 'carID', select: 'name'},
+    { path: 'tenantID', select: 'name'},
+  ], 'contractDate');
 
 // @desc    Get specific Contract by id
 // @route   GET /Contract/:id
 // @access  Private/ Admin, Manager
-exports.getContract = factory.getOne(Contract,[
-    { path: 'carID' },
-    { path: 'tenantID'},
-    { path: 'userID'}
-  ]);
+exports.getContract = factory.getOne(Contract,'',' -createdAt -updatedAt -__v');
 
 // @desc    Create Contract
 // @route   POST  /Contract
@@ -106,7 +101,7 @@ exports.deleteContract = factory.deleteOne(Contract);
 exports.getContractUseName = asyncHandler(async (req, res, next) => {
  const name = req.query.name|| " ";
 
-  const allContracts = await Contract.find().populate("tenantID", "name")
+  const allContracts = await Contract.find().select('-createdAt -updatedAt -__v').populate("tenantID", "name")
 
   // Now filter based on populated `userID.name`
   const filteredContracts = allContracts.filter(contract =>
@@ -189,9 +184,6 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
   endDate.setDate(0); // last day of current month
   endDate.setHours(23, 59, 59, 999);
 
-  console.log(startDate);
-  console.log(endDate);
-
   const result = await Contract.aggregate([
     {
       $match: {
@@ -266,7 +258,10 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
 exports.sendEjsFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   let gg
-  const contract = await Contract.findById(id);
+  const contract = await Contract.findById(id).populate([
+    { path: 'tenantID' },
+    { path: 'carID'}
+  ]);
   if (!contract) {
     return next(new ApiError(`No contract found for ID ${id}`, 404));
   }
