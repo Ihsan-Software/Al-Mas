@@ -43,7 +43,7 @@ exports.getUsers = factory.getAll(User,'',' -password -createdAt -updatedAt -__v
 // @desc    Get specific user by id
 // @route   GET /users/:id
 // @access  Private/ Admin
-exports.getUser = factory.getOne(User);
+exports.getUser = factory.getOne(User,'',' -password -createdAt -updatedAt -__v');
 
 // @desc    Create user
 // @route   POST  /users
@@ -58,17 +58,6 @@ exports.updateUser = factory.updateOne(User)
 // @route   DELETE /users/:id
 // @access  Private/ Admin
 exports.deleteUser = factory.deleteOne(User);
-
-
-// **** User CRUD ****
-
-// @desc    Get Logged user data
-// @route   GET /users/getMe
-// @access  Private/Protect
-exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
-    req.params.id = req.user._id;
-    next();
-});
 
 
 // @desc    Update logged user password
@@ -90,28 +79,3 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
     // 2) Generate token
     res.status(200).json({ data: user });
 });
-
-
-// @desc    Update logged user data (without password, role)
-// @route   PUT /users/updateMe
-// @access  Private/Protect
-exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    res.status(200).json({ data: updatedUser });
-});
-
-// @desc    Deactivate logged user
-// @route   DELETE /users/deleteMe
-// @access  Private/Protect
-exports.deleteLoggedUserData = asyncHandler(async (req, res, next) => {
-    await User.findByIdAndDelete(req.user._id);
-    res.status(204).json({ status: 'Success' });
-});
-
-
-
-

@@ -5,8 +5,6 @@ const {
   createUserValidator,
   updateUserValidator,
   deleteUserValidator,
-  // FOR USER
-  updateLoggedUserValidator,
   updateLoggedUserPasswordValidator
 } = require("../utils/validators/userValidator");
 
@@ -16,30 +14,18 @@ const {
   getUser,
   createUser,
   updateUser,
+  updateLoggedUserPassword,
   deleteUser,
   uploadUserImage,
   resizeImage,
-  // FOR USER
-  getLoggedUserData,
-  updateLoggedUserPassword,
-  updateLoggedUserData,
-  deleteLoggedUserData,
   deleteOldUserImage
 } = require("../controllers/userController");
 
 const auth = require("../controllers/authController");
 const router = express.Router();
 
-// FOR USER
-router.use(auth.protect);
-
-router.get("/getMyInfo", getLoggedUserData, getUser);
-router.patch("/updateMyInfo",updateLoggedUserValidator, updateLoggedUserData);
-router.patch("/updateMyImage",uploadUserImage, deleteOldUserImage, resizeImage, updateLoggedUserData);
-router.delete("/deleteMyAccount", deleteLoggedUserData);
-
-
 // FOR ADMIN
+router.use(auth.protect);
 router.use(auth.allowedTo("admin"));
 router.route("/")
 .get(getUsers)

@@ -28,7 +28,15 @@ const userSchema = new mongoose.Schema(
         type: String,
         enum: ["manager", "admin"],
         default: "manager",
-        }
+    },
+    userDiscount:{
+        type: String,
+        required: [true, "User Discount required"]
+    },
+    temporarilyDeleted:{
+        type: Boolean,
+        default: false
+    }
 },
 { timestamps: true }
 );

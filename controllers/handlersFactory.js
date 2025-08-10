@@ -3,7 +3,7 @@ const ApiError = require('../utils/apiError');
 
 exports.getAll = (Model, populationOpt, selectedFields) =>
   asyncHandler(async (req, res) => {
-    let query = Model.find().select(selectedFields);
+    let query = Model.find({ temporarilyDeleted: false }).select(selectedFields);
 
     if (populationOpt) {
       query = query.populate(populationOpt);

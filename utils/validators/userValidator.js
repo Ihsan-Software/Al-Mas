@@ -38,6 +38,8 @@ exports.createUserValidator = [
     .notEmpty()
     .withMessage('image required'),
   check("role").optional(),
+  check("userDiscount").optional(),
+  check("temporarilyDeleted").optional(),
 
   validatorMiddleware,
 ];
@@ -80,6 +82,8 @@ exports.updateUserValidator = [
 
   check("image").optional(),
   check("role").optional(),
+  check("userDiscount").optional(),
+  check("temporarilyDeleted").optional(),
   validatorMiddleware,
 ];
 
@@ -88,40 +92,6 @@ exports.deleteUserValidator = [
   validatorMiddleware,
 ];
 
-
-
-exports.updateLoggedUserValidator = [
-  check("name")
-    .optional()
-    .notEmpty()
-    .withMessage("User required")
-    .isLength({ min: 2 , max: 50})
-    .withMessage('User name must be between 2 and 50 characters'),
-
-  check("email")
-    .optional()
-    .notEmpty()
-    .withMessage("Email required")
-    .isEmail()
-    .withMessage("Invalid email address")
-    .custom((val) =>
-      User.findOne({ email: val }).then((user) => {
-        if (user) {
-          return Promise.reject(new Error("E-mail already in user"));
-        }
-      })
-    ),
-
-  check("phone")
-    .optional()
-    .isLength({min:11, max: 15 }) 
-    .withMessage('Phone number must be between 11 and 15 digits'),
-
-    body("image")
-    .optional(),
-
-  validatorMiddleware,
-];
 
 exports.updateLoggedUserPasswordValidator = [
   check('newPassword')
