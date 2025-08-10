@@ -12,7 +12,7 @@ const Car = require("../models/carModel")
 // @desc    Get list of Booking
 // @route   GET /Booking
 // @access  Private/ Admin, Manager
-exports.getBookings = factory.getAll(Booking,[
+exports.getBookings = factory.getAllDocWthNoRelation(Booking,[
     { path: 'carID', select: 'name' },
     { path: 'tenantID', select: 'name' }
   ],'bookingDate governorate');
@@ -57,7 +57,11 @@ exports.deleteBooking = factory.deleteOne(Booking);
 exports.getBookingUseName = asyncHandler(async (req, res, next) => {
  const name = req.query.name|| " ";
 
-  const allBookings = await Booking.find();
+  const allBookings = await Booking.find().populate([
+    { path: 'tenantID' },
+    { path: 'carID'},
+    { path: 'userID'}
+  ]);
 
   // Now filter based on populated `userID.name`
   const filteredBookings = allBookings.filter(Booking =>
