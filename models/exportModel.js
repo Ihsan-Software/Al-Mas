@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const exportSchema = new mongoose.Schema({
+    userID: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, "user ID required"],
+    },
   title: {
     type: String,
     required: [true, 'Export title is required'],

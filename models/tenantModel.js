@@ -3,6 +3,11 @@ const bcrypt = require("bcrypt");
 const dayjs = require('dayjs');
 const tenantSchema = new mongoose.Schema(
 {
+    userID: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, "user ID required"],
+    },
     name: {
         type: String,
         trim: true,

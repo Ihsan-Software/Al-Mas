@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const carSchema = new mongoose.Schema(
 {
+    userID: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, "user ID required"],
+    },
     name: {
         type: String,
         trim: true,
