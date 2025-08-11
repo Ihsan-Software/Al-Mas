@@ -4,6 +4,8 @@ const asyncHandler = require("express-async-handler");
 
 const ApiError = require("../utils/apiError");
 const Tenant = require("../models/tenantModel");
+const Fines = require("../models/finesModel");
+const Contract = require("../models/contractModel");
 const factory = require("./handlersFactory");
 
 // for image
@@ -108,7 +110,34 @@ exports.updateTenant = factory.updateOne(Tenant)
 // @desc    Delete specific Tenant
 // @route   DELETE /tenant/:id
 // @access  Private/ Admin, Manager
-exports.deleteTenant = factory.deleteOne(Tenant);
+exports.deleteTenant = asyncHandler(async (req, res, next) => {
+  
+  const tenant = await Tenant.findById(req.params.id);
+  // chick if there exist tenant
+  if (!tenant) {
+    return res.status(404).json({ message: 'Tenant not found' });
+  }
+
+
+  if (tenant.temporarilyDeleted) {
+
+    // Find all contracts and fines related to this tenant
+    const contract = await Contract.findOne({ tenantID: tenant._id  });
+    const fines = await Fines.findOne({ tenantID: tenant._id  });
+
+     // Delete all contracts and fines related to this tenant
+    await Contract.findByIdAndDelete(contract.id);
+    await Fines.findByIdAndDelete(fines.id);
+
+    // Delete the tenant
+    await Tenant.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({ message: 'Tenant and all related data deleted successfully' });
+  } else {
+    return res.status(400).json({ message: 'Can not delete this tenant with his all related info' });
+  }
+
+});
 
 
 // **** Tenant CRUD ****

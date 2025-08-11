@@ -4,6 +4,8 @@ const asyncHandler = require("express-async-handler");
 
 const ApiError = require("../utils/apiError");
 const Car = require("../models/carModel");
+const Fines = require("../models/finesModel");
+const Contract = require("../models/contractModel");
 const factory = require("./handlersFactory");
 
 // for image
@@ -57,8 +59,34 @@ exports.updateCar = factory.updateOne(Car)
 // @desc    Delete specific Car
 // @route   DELETE /car/:id
 // @access  Private/ Admin, Manager
-exports.deleteCar = factory.deleteOne(Car);
+exports.deleteCar = asyncHandler(async (req, res, next) => {
+  
+  const car = await Car.findById(req.params.id);
+  // chick if there exist car
+  if (!car) {
+    return res.status(404).json({ message: 'car not found' });
+  }
 
+
+  if (car.temporarilyDeleted) {
+
+    // Find all contracts and fines related to this tenant
+    const contract = await Contract.findOne({ carID: car._id  });
+    const fines = await Fines.findOne({ carID: car._id  });
+
+     // Delete all contracts and fines related to this tenant
+    await Contract.findByIdAndDelete(contract.id);
+    await Fines.findByIdAndDelete(fines.id);
+
+    // Delete the tenant
+    await Car.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({ message: 'Car and all related data deleted successfully' });
+  } else {
+    return res.status(400).json({ message: 'Can not delete this car with his all related info' });
+  }
+
+});
 
 // **** Car CRUD ****
 

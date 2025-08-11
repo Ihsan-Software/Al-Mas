@@ -257,7 +257,7 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
 
 exports.sendEjsFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  let gg
+  let newQuery
   const contract = await Contract.findById(id).populate([
     { path: 'tenantID' },
     { path: 'carID'}
@@ -266,16 +266,16 @@ exports.sendEjsFile = asyncHandler(async (req, res, next) => {
     return next(new ApiError(`No contract found for ID ${id}`, 404));
   }
   if(req.query.pdfName=='contract' && !contract.driverName){
-    gg = 'contract1'
+    newQuery = 'contract1'
   }
   else if(req.query.pdfName=='contract' && contract.driverName){
-    gg = 'contract2'
+    newQuery = 'contract2'
   }
   else{
-    gg = 'invoice'
+    newQuery = 'invoice'
   }
 
- res.render(`${gg}.ejs`, { contract });
+ res.render(`${newQuery}.ejs`, { contract });
 });
 
 exports.createPdfFromEjsFile = asyncHandler(async (req, res, next) => {
