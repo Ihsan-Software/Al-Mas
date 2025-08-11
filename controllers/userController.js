@@ -5,6 +5,13 @@ const bcrypt = require("bcrypt");
 
 const ApiError = require("../utils/apiError");
 const User = require("../models/userModel");
+const Booking = require("../models/bookingModel");
+const Car = require("../models/carModel");
+const Contract = require("../models/contractModel");
+const Export = require("../models/exportModel");
+const Fines = require("../models/finesModel");
+const Tenant = require("../models/tenantModel");
+const SubUser = require("../models/subUserModel");
 const factory = require("./handlersFactory");
 const createToken = require("../utils/createToken");
 
@@ -57,7 +64,34 @@ exports.updateUser = factory.updateOne(User)
 // @desc    Delete specific user
 // @route   DELETE /users/:id
 // @access  Private/ Admin
-exports.deleteUser = factory.deleteOne(User);
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+    
+    const user = await User.findById(req.params.id);
+    // chick if there exist car
+    if (!user) {
+        return res.status(404).json({ message: 'user not found' });
+    }
+    if(user.temporarilyDeleted){
+        const subUser = await SubUser.create({
+                name:user.name
+            })
+
+         await Promise.all([
+            Booking.updateMany({ userID: user.id }, { $set: { userID: subUser._id } }),
+            Car.updateMany({ userID: user.id }, { $set: { userID: subUser._id } }),
+            Contract.updateMany({ userID: user.id }, { $set: { userID: subUser._id } }),
+            Export.updateMany({ userID: user.id }, { $set: { userID: subUser._id } }),
+            Fines.updateMany({ userID: user.id }, { $set: { userID: subUser._id } }),
+            Tenant.updateMany({ userID: user.id }, { $set: { userID: subUser._id } })
+        ]);
+        
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: 'user and all related data deleted successfully' });
+    }
+    else{
+        return res.status(400).json({ message: 'Can not delete this user with his all related info' })
+    }
+});
 
 
 // @desc    Update logged user password

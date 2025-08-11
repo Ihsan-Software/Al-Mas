@@ -30,8 +30,7 @@ const userSchema = new mongoose.Schema(
         default: "manager",
     },
     userDiscount:{
-        type: String,
-        required: [true, "User Discount required"]
+        type: String
     },
     temporarilyDeleted:{
         type: Boolean,
