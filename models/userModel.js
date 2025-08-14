@@ -1,36 +1,16 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
-{
+{    
+    userInfoID: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'UserInfo',
+      required: [true, "User Info ID required"],
+    },
     name: {
         type: String,
         trim: true,
         required: [true, "name required"],
-    },
-    email: {
-        type: String,
-        required: [true, "email required"],
-        unique: true,
-        lowercase: true,
-    },
-    password: {
-        type: String,
-        required: [true, "password required"],
-        minlength: [8, "Too short password"],
-    },
-    image: {
-        type: String,
-        required: [true, "image required"]
-   },
-    phone: String,
-    role: {
-        type: String,
-        enum: ["manager", "admin"],
-        default: "manager",
-    },
-    userDiscount:{
-        type: String
     },
     temporarilyDeleted:{
         type: Boolean,
@@ -40,29 +20,15 @@ const userSchema = new mongoose.Schema(
 { timestamps: true }
 );
 
-
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    // Hashing user password
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
+// Mongoose query middleware
+userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'userInfoID',
+     select: '-createdAt -updatedAt -__v'
+  });
+  next();
 });
 
-const setImageURL = (doc) => {
-    if (doc.image && !doc.image.includes(`${process.env.BASE_URL}`)) {
-        const imageUrl = `${process.env.BASE_URL}/users/${doc.image}`;
-        doc.image = imageUrl;
-    }
-};
-// findOne, findAll and update
-userSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
-// create
-userSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
 
 const User = mongoose.model("User", userSchema);
 

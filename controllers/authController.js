@@ -6,18 +6,31 @@ const ApiError = require('../utils/apiError');
 const createToken = require('../utils/createToken');
 
 const User = require('../models/userModel');
+const UserInfo = require('../models/userInfoModel');
 
 // @desc    Signup
 // @route   GET /api/v1/auth/signup
 // @access  Public
 exports.signup = asyncHandler(async (req, res, next) => {
-  // 1- Create user
-  const user = await User.create(req.body);
 
-  // 2- Generate token
+  const userInfo = await UserInfo.create({
+    email: req.body.email,
+    password: req.body.password,
+    image: req.body.image,
+    phone: req.body.phone,
+    role: req.body.role,
+    });
+
+  // 2️⃣ Create User linked to UserInfo
+  const user = await User.create({
+    name: req.body.name,
+    userInfoID: userInfo._id
+    });
+
+  // 3️⃣ Generate token for User
   const token = createToken(user._id);
-
   res.status(201).json({ data: user, token });
+
 });
 
 // @desc    Login
@@ -27,10 +40,16 @@ exports.login = asyncHandler(async (req, res, next) => {
   // 1) check if password and email in the body (validation)
   // 2) check if user exist & check if password is correct
 
-  const user = await User.findOne({ email : req.body.email }).select("+password");
+  const userInfo = await UserInfo.findOne({ email : req.body.email }).select("+password");
   
-  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+  if (!userInfo || !(await bcrypt.compare(req.body.password, userInfo.password))) {
     return next(new ApiError('Incorrect email or password', 401));
+  }
+
+  const user = await User.findOne({ userInfoID: userInfo._id })
+
+  if (!user) {
+    return next(new ApiError("User account not found for this email", 404));
   }
   // 3) generate token
   const token = createToken(user._id);
@@ -101,7 +120,7 @@ exports.allowedTo = (...roles) =>
   asyncHandler(async (req, res, next) => {
     // 1) access roles
     // 2) access registered user (req.user.role)
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(req.user.userInfoID.role)) {
       return next(
         new ApiError('You are not allowed to access this route', 403)
       );

@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const { check, body } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
-const User = require("../../models/userModel");
+const UserInfo = require("../../models/userInfoModel");
 
 exports.createUserValidator = [
   check("name")
@@ -16,7 +16,7 @@ exports.createUserValidator = [
     .isEmail()
     .withMessage("Invalid email address")
     .custom((val) =>
-      User.findOne({ email: val }).then((user) => {
+      UserInfo.findOne({ email: val }).then((user) => {
         if (user) {
           return Promise.reject(new Error("E-mail already in user"));
         }
@@ -63,7 +63,7 @@ exports.updateUserValidator = [
     .isEmail()
     .withMessage("Invalid email address")
     .custom((val) =>
-      User.findOne({ email: val }).then((user) => {
+      UserInfo.findOne({ email: val }).then((user) => {
         if (user) {
           return Promise.reject(new Error("E-mail already in user"));
         }

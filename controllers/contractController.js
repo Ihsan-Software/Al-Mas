@@ -260,7 +260,8 @@ exports.sendEjsFile = asyncHandler(async (req, res, next) => {
   let newQuery
   const contract = await Contract.findById(id).populate([
     { path: 'tenantID' },
-    { path: 'carID'}
+    { path: 'carID'},
+    { path: 'userID'}
   ]);
   if (!contract) {
     return next(new ApiError(`No contract found for ID ${id}`, 404));

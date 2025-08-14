@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { v4: uuidv4 } = require("uuid"); //for random image name id
 const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
@@ -60,33 +62,39 @@ exports.updateCar = factory.updateOne(Car)
 // @route   DELETE /car/:id
 // @access  Private/ Admin, Manager
 exports.deleteCar = asyncHandler(async (req, res, next) => {
-  
   const car = await Car.findById(req.params.id);
-  // chick if there exist car
-  if (!car) {
-    return res.status(404).json({ message: 'car not found' });
+  if (!car) return res.status(404).json({ message: "Car not found" });
+
+  if (!car.temporarilyDeleted) {
+    return res.status(400).json({ message: "Cannot delete this car with all related info" });
   }
 
-
-  if (car.temporarilyDeleted) {
-
-    // Find all contracts and fines related to this tenant
-    const contract = await Contract.findOne({ carID: car._id  });
-    const fines = await Fines.findOne({ carID: car._id  });
-
-     // Delete all contracts and fines related to this tenant
-    await Contract.findByIdAndDelete(contract.id);
-    await Fines.findByIdAndDelete(fines.id);
-
-    // Delete the tenant
-    await Car.findByIdAndDelete(req.params.id);
-
-    return res.status(200).json({ message: 'Car and all related data deleted successfully' });
-  } else {
-    return res.status(400).json({ message: 'Can not delete this car with his all related info' });
+  // 1️⃣ Delete car image if exists
+  if (car.image) {
+    // Assuming image is stored like BASE_URL/cars/filename
+    const filename = car.image.split("/cars/")[1];
+    const filePath = path.join(__dirname, "../uploads/cars", filename); // adjust your path
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   }
 
+  // 2️⃣ Delete related contracts
+  const contracts = await Contract.find({ carID: car._id });
+  for (const contract of contracts) {
+    await Contract.findByIdAndDelete(contract._id);
+  }
+
+  // 3️⃣ Delete related fines
+  const finesList = await Fines.find({ carID: car._id });
+  for (const fine of finesList) {
+    await Fines.findByIdAndDelete(fine._id);
+  }
+
+  // 4️⃣ Delete the car
+  await Car.findByIdAndDelete(car._id);
+
+  res.status(200).json({ message: "Car and all related data deleted successfully" });
 });
+
 
 // **** Car CRUD ****
 
