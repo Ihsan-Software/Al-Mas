@@ -37,7 +37,7 @@ router.route("/htmlPage/:id")
   .get(sendHtmlPage)
 
 router.use(auth.protect);
-router.use(auth.allowedTo("admin"));
+router.use(auth.allowedTo("admin","manager"));
 
 router.route("/")
 .get(getContracts)

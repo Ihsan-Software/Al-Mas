@@ -99,7 +99,10 @@ const contractSchema = new mongoose.Schema(
    isReturn:{
     type: Boolean,
     default: false
-   }
+   },
+    dailyPrice: {
+        type: Number
+    },
 
 },
 { timestamps: true }

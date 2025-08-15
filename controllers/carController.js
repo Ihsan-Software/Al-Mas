@@ -42,7 +42,7 @@ exports.deleteOldCarImage = deleteOldImage(Car, 'image', 'cars');
 // @desc    Get list of Car
 // @route   GET /car
 // @access  Private/ Admin, Manager
-exports.getCars = factory.getAll(Car,'','id name carModel color');
+exports.getCars = factory.getAll(Car,'','id name carModel color dailyPrice');
 
 // @desc    Get specific Car by id
 // @route   GET /car/:id
@@ -78,16 +78,12 @@ exports.deleteCar = asyncHandler(async (req, res, next) => {
   }
 
   // 2️⃣ Delete related contracts
-  const contracts = await Contract.find({ carID: car._id });
-  for (const contract of contracts) {
-    await Contract.findByIdAndDelete(contract._id);
-  }
+  await Contract.deleteMany({ carID: car._id });
+
 
   // 3️⃣ Delete related fines
-  const finesList = await Fines.find({ carID: car._id });
-  for (const fine of finesList) {
-    await Fines.findByIdAndDelete(fine._id);
-  }
+  await Fines.deleteMany({ carID: car._id });
+
 
   // 4️⃣ Delete the car
   await Car.findByIdAndDelete(car._id);

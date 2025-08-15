@@ -36,6 +36,8 @@ exports.getContract = factory.getOne(Contract,'',' -createdAt -updatedAt -__v');
 // @route   POST  /Contract
 //  @access  Private/ Admin, Manager
 exports.createContract =  asyncHandler(async (req, res, next) => {
+  const car = await Car.findById(req.body.carID)
+  req.body.dailyPrice = car.dailyPrice 
     req.body.userID = req.user._id
     // calculate total price, priceAfterDiscount and pricePaid and RemainingPrice
     const multipliers = {
@@ -86,7 +88,25 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
 // @desc    Update specific Contract
 // @route   PUT /Contract/:id
 // @access  Private/ Admin, Manager
-exports.updateContract = factory.updateOne(Contract)
+exports.updateContract = asyncHandler(async (req, res, next) => {
+  const isAdmin = req.user.userInfoID.role === "admin"; // or check by role ID if you store it differently
+
+  // If not admin → remove dailyPrice from update data
+  if (!isAdmin && req.body.dailyPrice !== undefined) {
+    delete req.body.dailyPrice;
+  }
+
+  const contract = await Contract.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!contract) {
+    return next(new ApiError(`No contract for this id ${req.params.id}`, 404));
+  }
+
+  res.status(200).json({ data: contract });
+});
 // @desc    Delete specific Contract
 // @route   DELETE /Contract/:id
 // @access  Private/ Admin, Manager

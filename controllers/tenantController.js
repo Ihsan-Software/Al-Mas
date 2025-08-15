@@ -1,7 +1,8 @@
 const { v4: uuidv4 } = require("uuid"); //for random image name id
 const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
-
+const fs = require('fs');
+const path = require('path');
 const ApiError = require("../utils/apiError");
 const Tenant = require("../models/tenantModel");
 const Fines = require("../models/finesModel");
@@ -111,32 +112,44 @@ exports.updateTenant = factory.updateOne(Tenant)
 // @route   DELETE /tenant/:id
 // @access  Private/ Admin, Manager
 exports.deleteTenant = asyncHandler(async (req, res, next) => {
-  
   const tenant = await Tenant.findById(req.params.id);
-  // chick if there exist tenant
+
+  // 1️⃣ Check if tenant exists
   if (!tenant) {
     return res.status(404).json({ message: 'Tenant not found' });
   }
 
-
-  if (tenant.temporarilyDeleted) {
-
-    // Find all contracts and fines related to this tenant
-    const contract = await Contract.findOne({ tenantID: tenant._id  });
-    const fines = await Fines.findOne({ tenantID: tenant._id  });
-
-     // Delete all contracts and fines related to this tenant
-    await Contract.findByIdAndDelete(contract.id);
-    await Fines.findByIdAndDelete(fines.id);
-
-    // Delete the tenant
-    await Tenant.findByIdAndDelete(req.params.id);
-
-    return res.status(200).json({ message: 'Tenant and all related data deleted successfully' });
-  } else {
-    return res.status(400).json({ message: 'Can not delete this tenant with his all related info' });
+  // 2️⃣ Only proceed if tenant is marked for deletion
+  if (!tenant.temporarilyDeleted) {
+    return res.status(400).json({ message: 'Cannot delete this tenant with all related info' });
   }
 
+  // 3️⃣ Helper function to delete image safely
+  const deleteImage = (imageField) => {
+    if (!imageField) return;
+
+    // If only filename is stored, adjust path accordingly
+    const imagePath = path.join(__dirname, "../uploads/tenant", imageField.split("/tenant/")[1])
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    } else {
+      console.warn('File not found:', imagePath);
+    }
+  };
+
+  // 4️⃣ Delete all images if they exist
+  deleteImage(tenant.personalImage);
+  deleteImage(tenant.personalDocumentsImagRequired);
+  deleteImage(tenant.personalDocumentsImagOptional);
+
+  // 5️⃣ Delete all related contracts & fines
+  await Contract.deleteMany({ tenantID: tenant._id });
+  await Fines.deleteMany({ tenantID: tenant._id });
+
+  // 6️⃣ Delete tenant
+  await Tenant.findByIdAndDelete(req.params.id);
+
+  res.status(200).json({ message: 'Tenant and all related data deleted successfully' });
 });
 
 

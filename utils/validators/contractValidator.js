@@ -32,10 +32,6 @@ exports.createContractValidator = [
         }
       })
     ),
-
-  check("dailyPrice")
-    .notEmpty()
-    .withMessage("daily Price required"),
   
   check("overtimeCost")
     .notEmpty()
