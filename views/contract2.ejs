@@ -1,288 +1,288 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>عقد ايجار سيارة</title>
-  <link href="https://fonts.googleapis.com/css2?family=Almarai&display=swap" rel="stylesheet" />
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Almarai', sans-serif;
-      background: #f9f9f9;
-      color: #222;
-      line-height: 1.4;
-      padding: 16px;
-    }
-    .container {
-      width: 100%;
-      height: 50vh;
-      margin: auto;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      gap: 12px;
-    }
-    .person-photo {
-      width: 100px;
-      height: 100px;
-      text-align: center;
-      line-height: 100px; /* optional: for vertical centering if no flex */
-    }
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>عقد ايجار سيارة</title>
+          <link href="https://fonts.googleapis.com/css2?family=Almarai&display=swap" rel="stylesheet" />
+          <style>
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              font-family: 'Almarai', sans-serif;
+              background: #f9f9f9;
+              color: #222;
+              line-height: 1.4;
+              padding: 16px;
+            }
+            .container {
+              width: 100%;
+              height: 50vh;
+              margin: auto;
+            }
+            header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              flex-wrap: wrap;
+              margin-bottom: 20px;
+              gap: 12px;
+            }
+            .person-photo {
+              width: 100px;
+              height: 100px;
+              text-align: center;
+              line-height: 100px; /* optional: for vertical centering if no flex */
+            }
 
-    .person-photo img {
-      vertical-align: middle;
-      width: 120%;
-    }
-    .header-texts {
-      text-align: center;
-      flex: 1;
-      font-weight: bold;
-      font-size:  10px;
-      min-width: 200px;
-    }
-    .stamp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid #2b6cb0;
-      color: #2b6cb0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      flex-direction: column;
-      font-size:  10px;
-      padding: 8px;
-    }
-    .stamp svg {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 6px;
-    }
-    .table2 {
-      width: 100%;
-      border-collapse: collapse;
-      font-size:  10px;
-      margin: 15px 0px;
-    }
-    .table2 th, .table2 td {
-      border: 1px solid #999;
-      padding: 8px 10px;
-      text-align: center;
-      word-wrap: break-word;
-    }
-    .table2 th {
+            .person-photo img {
+              vertical-align: middle;
+              width: 120%;
+            }
+            .header-texts {
+              text-align: center;
+              flex: 1;
+              font-weight: bold;
+              font-size:  10px;
+              min-width: 200px;
+            }
+            .stamp {
+              width: 120px;
+              height: 120px;
+              border-radius: 50%;
+              border: 3px solid #2b6cb0;
+              color: #2b6cb0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              text-align: center;
+              flex-direction: column;
+              font-size:  10px;
+              padding: 8px;
+            }
+            .stamp svg {
+              width: 40px;
+              height: 40px;
+              margin-bottom: 6px;
+            }
+            .table2 {
+              width: 100%;
+              border-collapse: collapse;
+              font-size:  10px;
+              margin: 15px 0px;
+            }
+            .table2 th, .table2 td {
+              border: 1px solid #999;
+              padding: 8px 10px;
+              text-align: center;
+              word-wrap: break-word;
+            }
+            .table2 th {
 
-      background: #ddd;
-      font-weight: bold;
-      font-size:  10px;
-    }
-    .table1 {
-      width: 100%;
-      font-size:  10px;
-    }
-    .table1 th, .table1 td {
-      padding: 0px 10px;
-      text-align: center;
-      word-wrap: break-word;
-    }
-    .table1 th {
-      background: #ddd;
-      font-weight: bold;
-      font-size:  10px;
-    }
-    .label {
-      background: #eee;
-      font-weight: bold;
-    }
+              background: #ddd;
+              font-weight: bold;
+              font-size:  10px;
+            }
+            .table1 {
+              width: 100%;
+              font-size:  10px;
+            }
+            .table1 th, .table1 td {
+              padding: 0px 10px;
+              text-align: center;
+              word-wrap: break-word;
+            }
+            .table1 th {
+              background: #ddd;
+              font-weight: bold;
+              font-size:  10px;
+            }
+            .label {
+              background: #eee;
+              font-weight: bold;
+            }
 
-    .table1 .signature-text {
-      flex: 1;
-      font-size:  10px;
-    }
-    .signature-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      margin-top: 4px;
-    }
+            .table1 .signature-text {
+              flex: 1;
+              font-size:  10px;
+            }
+            .signature-table {
+              width: 100%;
+              border-collapse: collapse;
+              table-layout: fixed;
+              margin-top: 4px;
+            }
 
-    .signature-table td {
-      vertical-align: top;
-      padding: 0px 10px;
-    }
+            .signature-table td {
+              vertical-align: top;
+              padding: 0px 10px;
+            }
 
-    .signature-text {
-      font-size:  10px;
-      text-align: right;
-      width: 100%;
-    }
+            .signature-text {
+              font-size:  10px;
+              text-align: right;
+              width: 100%;
+            }
 
-    .fingerprint-cell {
-      width: 120px;
-    }
+            .fingerprint-cell {
+              width: 120px;
+            }
 
-    .fingerprint {
-      width: 80px;
-      height: 80px;
-      border: 2px solid #94a3b8;
-      border-radius: 12px;
-    }
-    .footer-info {
-      font-size:  10px;
-      text-align: center;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-
-
-    <table class="table1">
-      <tbody>
-        <tr><td colspan="1">
-          <div class="signature-text" style="margin-top: 16px; text-align: right;">
-        <p><strong>الماس</strong></p>
-        <p><strong>لتأجير السيارات</strong></p>
-
-      </div>
-      </td>
-          
-          <td colspan="3">
-            <div class="header-texts">
-              عقد تأجير سيارة مع سائق  
-            </div>
-          </td>
-          
-          <td colspan="3" style="direction: ltr;">
-                  <div class="person-photo">
-                    <img src="<%= process.env.BASE_URL %>/images/logo.png" alt="no image">
-                  </div>
-          </td></tr>
-      </tbody>
+            .fingerprint {
+              width: 80px;
+              height: 80px;
+              border: 2px solid #94a3b8;
+              border-radius: 12px;
+            }
+            .footer-info {
+              font-size:  10px;
+              text-align: center;
+              color: #555;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
 
 
-    </table>
+            <table class="table1">
+              <tbody>
+                <tr><td colspan="1">
+                  <div class="signature-text" style="margin-top: 16px; text-align: right;">
+                <p><strong>الماس</strong></p>
+                <p><strong>لتأجير السيارات</strong></p>
 
-    <!-- Single merged table -->
-    <table class="table2">
+              </div>
+              </td>
+                  
+                  <td colspan="3">
+                    <div class="header-texts">
+                      عقد تأجير سيارة مع سائق  
+                    </div>
+                  </td>
+                  
+                  <td colspan="3" style="direction: ltr;">
+                          <div class="person-photo">
+                            <img src="<%= process.env.BASE_URL %>/images/logo.png" alt="no image">
+                          </div>
+                  </td></tr>
+              </tbody>
 
-      <thead><tr><th colspan="5">الطرف الاول(المؤجر) - First party (lessor)</th></tr></thead>
-      <tbody>
-        <tr>
-          <th colspan="2">اسم الشركة - Company Name</th>
-          <td colspan="3">الماس لتأجير السيارات</th>
-        </tr>
-        <tr>
-          <th colspan="2">رقم الاجازة والرقم التجاري - License number and commercial number</td>
-          <td colspan="3">(16912 اجازة ),(8657/326 تجاري ) </td>
-        </tr>
-        <tr>
-          <th colspan="2">ويمثلها السيد - Represented by Mr.</th>
-          <td colspan="3">ايمن سالم غسان</th>
-        </tr>
-      </tbody>
 
-      <thead><tr><th colspan="5">الطرف الثاني(السائق) - The second party (the driver)</th></tr></thead>
-      <tbody>
-        <tr>
-          <th colspan="2">اسم السائق - Driver's name</th>
-          <td colspan="3"><%= contract.driverName %></th>
-        </tr>
-        <tr>
-          <th colspan="2">رقم البطاقة الوطنية - National ID number</td>
-          <td colspan="3"><%= contract.cardNumber %> </td>
-        </tr>
-        <tr>
-          <th colspan="2">رقم الهاتف - phone number</th>
-          <td colspan="3"><%= contract.phone %></th>
-        </tr>
-        <tr>
-          <th colspan="2">عنوان السكن - address</th>
-          <td colspan="3"><%= contract.address %></th>
-        </tr>
-      </tbody>
+            </table>
 
-      <thead><tr><th colspan="5">الطرف الثالث(المستأجر) - Third party (tenant)</th></tr></thead>
-      <tbody>
-        <tr>
-          <th colspan="2">اسم المستاجر - Tenant's name</th>
-          <td colspan="3"><%= contract.tenantID.name %></th>
-        </tr>
-        <tr>
-          <th colspan="2">رقم البطاقة الوطنية - National ID number</td>
-          <td colspan="3"><%= contract.tenantID.numberOfIdentification %> </td>
-        </tr>
-        <tr>
-          <th colspan="2">رقم الهاتف - phone number</th>
-          <td colspan="3"><%= contract.tenantID.phone %></th>
-        </tr>
-        <tr>
-          <th colspan="2">عنوان السكن - address</th>
-          <td colspan="3"><%= contract.tenantID.houseLocation %></th>
-        </tr>
-      </tbody>
+            <!-- Single merged table -->
+            <table class="table2">
 
-      <thead><tr><th colspan="5">بيانات المركبة ومدةالايجار والمبلغ - Vehicle data, rental period and amount</th></tr></thead>
-      <tbody>
-        <tr>
-          <th colspan="1">اسم المركبة - Vehicle name</th>
-          <th colspan="1">الرقم - The number</td>
-          <th colspan="1">النوع - Type</td>
-          <th colspan="1">رقم الشاصي - Chassis number</td>
-          <th colspan="1">رقم الهوية - ID number</td>
-        </tr>
-        <tr>
-          <td colspan="1"><%= contract.carID.name %></th>
-          <td colspan="1"><%= contract.carID.carNumber %> </td>
-          <td colspan="1"><%= contract.carID.carType %></th>
-          <td colspan="1"><%= contract.carID.chassisNumber %> </td>
-          <td colspan="1"><%= contract.carID.licenseNumber %></th>
-        </tr>
+              <thead><tr><th colspan="5">الطرف الاول(المؤجر) - First party (lessor)</th></tr></thead>
+              <tbody>
+                <tr>
+                  <th colspan="2">اسم الشركة - Company Name</th>
+                  <td colspan="3">الماس لتأجير السيارات</th>
+                </tr>
+                <tr>
+                  <th colspan="2">رقم الاجازة والرقم التجاري - License number and commercial number</td>
+                  <td colspan="3">(16912 اجازة ),(8657/326 تجاري ) </td>
+                </tr>
+                <tr>
+                  <th colspan="2">ويمثلها السيد - Represented by Mr.</th>
+                  <td colspan="3">ايمن سالم غسان</th>
+                </tr>
+              </tbody>
 
-        <tr>
-          <th colspan="1">الموديل - Model</th>
-          <th colspan="1">اللون - Color</td>
-          <th colspan="1">تاريخ الايجار - Rental date</td>
-          <th colspan="1">تاريخ العودة - Return date</td>
-          <th colspan="1">المبلغ الاجمالي - Total amount</td>
-        </tr>
-        <tr>
-          <td colspan="1"><%= contract.carID.carModel %></th>
-          <td colspan="1"><%= contract.carID.color %></td>
-          <td colspan="1"><%= contract.contractDate %></td>
-          <td colspan="1"><%= contract.returnDate %></th>
-          <td colspan="1"><%= contract.totalPrice %></th>
-        </tr>
-      </tbody>
-    </table>
+              <thead><tr><th colspan="5">الطرف الثاني(السائق) - The second party (the driver)</th></tr></thead>
+              <tbody>
+                <tr>
+                  <th colspan="2">اسم السائق - Driver's name</th>
+                  <td colspan="3"><%= contract.driverName %></th>
+                </tr>
+                <tr>
+                  <th colspan="2">رقم البطاقة الوطنية - National ID number</td>
+                  <td colspan="3"><%= contract.cardNumber %> </td>
+                </tr>
+                <tr>
+                  <th colspan="2">رقم الهاتف - phone number</th>
+                  <td colspan="3"><%= contract.phone %></th>
+                </tr>
+                <tr>
+                  <th colspan="2">عنوان السكن - address</th>
+                  <td colspan="3"><%= contract.address %></th>
+                </tr>
+              </tbody>
 
-    <!-- Signature -->
-    <table class="signature-table">
+              <thead><tr><th colspan="5">الطرف الثالث(المستأجر) - Third party (tenant)</th></tr></thead>
+              <tbody>
+                <tr>
+                  <th colspan="2">اسم المستاجر - Tenant's name</th>
+                  <td colspan="3"><%= contract.tenantID.name %></th>
+                </tr>
+                <tr>
+                  <th colspan="2">رقم البطاقة الوطنية - National ID number</td>
+                  <td colspan="3"><%= contract.tenantID.numberOfIdentification %> </td>
+                </tr>
+                <tr>
+                  <th colspan="2">رقم الهاتف - phone number</th>
+                  <td colspan="3"><%= contract.tenantID.phone %></th>
+                </tr>
+                <tr>
+                  <th colspan="2">عنوان السكن - address</th>
+                  <td colspan="3"><%= contract.tenantID.houseLocation %></th>
+                </tr>
+              </tbody>
 
-      <tr>
-        <td class="signature-text">
-          <strong>اسم وتوقيع منظم العقد - Name and signature of the contract organizer</strong>
-          <p><%= contract.userID.name %></p>
-        </td>
-        <td class="signature-text" style="text-align: center;">
-          <strong>اسم وتوقيع السائق - Driver's name and signature</strong>
-          <p><%= contract.driverName %></p>
-        </td>
-        <td class="signature-text" style="text-align: left;">
-          <strong>اسم وتوقيع المستأجر - Name and signature of the tenant</strong>
-          <p><%= contract.tenantID.name %></p>
-        </td>
-      </tr>
-    </table>
+              <thead><tr><th colspan="5">بيانات المركبة ومدةالايجار والمبلغ - Vehicle data, rental period and amount</th></tr></thead>
+              <tbody>
+                <tr>
+                  <th colspan="1">اسم المركبة - Vehicle name</th>
+                  <th colspan="1">الرقم - The number</td>
+                  <th colspan="1">النوع - Type</td>
+                  <th colspan="1">رقم الشاصي - Chassis number</td>
+                  <th colspan="1">رقم الهوية - ID number</td>
+                </tr>
+                <tr>
+                  <td colspan="1"><%= contract.carID.name %></th>
+                  <td colspan="1"><%= contract.carID.carNumber %> </td>
+                  <td colspan="1"><%= contract.carID.carType %></th>
+                  <td colspan="1"><%= contract.carID.chassisNumber %> </td>
+                  <td colspan="1"><%= contract.carID.licenseNumber %></th>
+                </tr>
 
-  </div>
-</body>
-</html>
+                <tr>
+                  <th colspan="1">الموديل - Model</th>
+                  <th colspan="1">اللون - Color</td>
+                  <th colspan="1">تاريخ الايجار - Rental date</td>
+                  <th colspan="1">تاريخ العودة - Return date</td>
+                  <th colspan="1">المبلغ الاجمالي - Total amount</td>
+                </tr>
+                <tr>
+                  <td colspan="1"><%= contract.carID.carModel %></th>
+                  <td colspan="1"><%= contract.carID.color %></td>
+                  <td colspan="1"><%= contract.contractDate %></td>
+                  <td colspan="1"><%= contract.returnDate %></th>
+                  <td colspan="1"><%= contract.totalPrice %></th>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Signature -->
+            <table class="signature-table">
+
+              <tr>
+                <td class="signature-text">
+                  <strong>اسم وتوقيع منظم العقد - Name and signature of the contract organizer</strong>
+                  <p><%= contract.userID.name %></p>
+                </td>
+                <td class="signature-text" style="text-align: center;">
+                  <strong>اسم وتوقيع السائق - Driver's name and signature</strong>
+                  <p><%= contract.driverName %></p>
+                </td>
+                <td class="signature-text" style="text-align: left;">
+                  <strong>اسم وتوقيع المستأجر - Name and signature of the tenant</strong>
+                  <p><%= contract.tenantID.name %></p>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </body>
+        </html>

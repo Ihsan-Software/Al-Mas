@@ -272,14 +272,23 @@ exports.getContractInfo = asyncHandler(async (req, res, next) => {
 
 exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  let newQuery
   const contract = await Contract.findById(id);
   if (!contract) {
     return next(new ApiError(`No contract found for ID ${id}`, 404));
   }
 
-
+  if(req.query.htmlName=='contract' && !contract.driverName){
+      newQuery = 'contract1'
+    }
+    else if(req.query.htmlName=='contract' && contract.driverName){
+      newQuery = 'contract2'
+    }
+    else{
+      newQuery = 'invoice'
+    }
   const html = await ejs.renderFile(
-      path.join(__dirname, '../views', `${req.query.htmlName}.ejs`),
+      path.join(__dirname, '../views', `${newQuery}.ejs`),
       { contract }
     );
 

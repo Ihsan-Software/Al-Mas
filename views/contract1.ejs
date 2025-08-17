@@ -12,28 +12,31 @@
       font-family: 'Almarai', sans-serif;
       background: #f9f9f9;
       color: #222;
-      line-height: 1.4;
-      padding: 16px;
+      line-height: 1.5;
+      font-size: 12px;
     }
     .container {
       width: 100%;
-      height: 50vh;
+      max-width: 210mm;
+      min-height: 297mm; /* Full A4 height */
       margin: auto;
+      padding: 15mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      gap: 12px;
+      margin-bottom: 15px;
     }
     .person-photo {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       border-radius: 8px;
       overflow: hidden;
-      border: 2px solid #ccc;
+      border: 1px solid #ccc;
     }
     .person-photo img {
       width: 100%;
@@ -44,231 +47,259 @@
       text-align: center;
       flex: 1;
       font-weight: bold;
-      font-size:  10px;
-      min-width: 200px;
-    }
-    .stamp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid #2b6cb0;
-      color: #2b6cb0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      flex-direction: column;
-      font-size:  10px;
-      padding: 8px;
-    }
-    .stamp svg {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 6px;
+      font-size: 16px;
+      margin: 0 10px;
     }
     .table2 {
       width: 100%;
       border-collapse: collapse;
-      font-size:  10px;
-      margin: 15px 0px;
+      font-size: 11px;
+      margin: 10px 0;
     }
     .table2 th, .table2 td {
       border: 1px solid #999;
-      padding: 8px 10px;
+      padding: 4px 6px;
       text-align: center;
-      word-wrap: break-word;
+      height: 30px; /* Increased row height */
     }
     .table2 th {
-
       background: #ddd;
       font-weight: bold;
-      font-size:  10px;
+      font-size: 11px;
     }
     .table1 {
       width: 100%;
-      font-size:  10px;
+      font-size: 11px;
+      margin-bottom: 15px;
     }
-    .table1 th, .table1 td {
-      padding: 0px 10px;
-      text-align: center;
-      word-wrap: break-word;
+    .table1 td {
+      padding: 0 5px;
+      vertical-align: middle;
     }
-    .table1 th {
-      background: #ddd;
-      font-weight: bold;
-      font-size:  10px;
-    }
-    .table1 .logo {
-      width: 15%;
-    }
-    .label {
-      background: #eee;
-      font-weight: bold;
-    }
-
-    .table1 .signature-text {
-      flex: 1;
-      font-size:  10px;
+    .logo {
+      width: 60px;
     }
     .signature-table {
       width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      margin-top: 4px;
+      margin: 20px 0;
     }
-
-    .signature-table td {
-      vertical-align: top;
-      padding: 0px 10px;
-    }
-
     .signature-text {
-      font-size:  10px;
+      font-size: 10px;
       text-align: right;
-      width: 100%;
+      padding: 5px;
     }
-
     .fingerprint-cell {
-      width: 120px;
+      width: 100px;
     }
-
     .fingerprint {
       width: 80px;
       height: 80px;
-      border: 2px solid #94a3b8;
-      border-radius: 12px;
+      border: 1px solid #94a3b8;
+      border-radius: 10px;
+      margin: 0 auto;
     }
     .footer-info {
-      font-size:  10px;
+      font-size: 9px;
       text-align: center;
       color: #555;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    @media print {
+      body {
+        background: white;
+        height: 100%;
+      }
+      .container {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 15mm;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-
-
-    <table class="table1">
-      <tbody>
-        <tr><td colspan="1">
-          <div class="signature-text" style="margin-top: 16px; text-align: right;">
-        <p><strong>الماس</strong></p>
-        <p><strong>لتأجير السيارات</strong></p>
-
-      </div>
-      </td>
-          
-          <td colspan="3">
-            <div class="header-texts">
-              عقد ايجار سيارة
+    <div>
+      <table class="table1">
+        <tr>
+          <td style="width: 25%">
+            <div style="text-align: right;">
+              <p style="margin: 5px 0; font-size: 14px;"><strong>الماس</strong></p>
+              <p style="margin: 5px 0; font-size: 14px;"><strong>لتأجير السيارات</strong></p>
             </div>
-            <div><img class="logo" src="<%= process.env.BASE_URL %>/images/logo.png" alt="no image"></div>
           </td>
-          
-          <td colspan="3" style="direction: ltr;">
-                  <div class="person-photo">
-        <img src="<%= contract.tenantID.personalImage %>" alt="صورة" />
-                  </div>
-          </td></tr>
-      </tbody>
+          <td style="width: 50%; text-align: center;">
+            <div class="header-texts">عقد ايجار سيارة</div>
+            <img class="logo" src="<%= process.env.BASE_URL %>/images/logo.png" alt="logo">
+          </td>
+          <td style="width: 25%; direction: ltr;">
+            <div class="person-photo">
+              <img src="<%= contract.tenantID.personalImage %>" alt="صورة">
+            </div>
+          </td>
+        </tr>
+      </table>
 
+      <table class="table2">
+        <tr>
+          <th colspan="2">رقم العقد<br>Contract NO</th>
+          <th colspan="2">موقع الاستخدام<br>Place</th>
+          <th colspan="3">تاريخ انتهاء العقد<br>End date</th>
+        </tr>
+        <tr>
+          <td colspan="2"><%= contract.contractNumber %></td>
+          <td colspan="2"><%= contract.tenantID.locationOfUse %></td>
+          <td colspan="3"><%= contract.returnDate %></td>
+        </tr>
 
-    </table>
-
-    <!-- Single merged table -->
-    <table class="table2">
-
-
-
-      <thead></thead>
-      <tbody>
-        <tr><th colspan="2">رقم العقد - Contract NO</th><th colspan="2">موقع الاستخدام- Place</th><th colspan="3">تاريخ انتهاء العقد - contract end date</th></tr>
-        <tr><td colspan="2"><%= contract.contractNumber %></td><td colspan="2"><%= contract.tenantID.locationOfUse %></td><td colspan="3"><%= contract.returnDate %></td></tr>
-      </tbody>
-
-      <thead><tr><th colspan="8">بيانات المستأجر</th></tr></thead>
-      <tbody>
+        <tr><th colspan="8">بيانات المستأجر</th></tr>
         <tr>
           <th colspan="2">اسم المستأجر</th>
-          <td colspan="3"> <%= contract.tenantID.name %></th>
+          <td colspan="3"><%= contract.tenantID.name %></td>
           <th colspan="2">REENTER NAME</th>
         </tr>
         <tr>
-          <th colspan="2"> عنوان المستأجر</td>
-          <td colspan="3"><%= contract.tenantID.houseLocation %> </td>
-          <th colspan="2">REENTER ADDRESS</td>
+          <th colspan="2">عنوان المستأجر</th>
+          <td colspan="3"><%= contract.tenantID.houseLocation %></td>
+          <th colspan="2">REENTER ADDRESS</th>
         </tr>
         <tr>
           <th colspan="2">رقم الهاتف</th>
-          <td colspan="3"><%= contract.tenantID.phone %></th>
+          <td colspan="3"><%= contract.tenantID.phone %></td>
           <th colspan="2">REENTER PHONE NO</th>
         </tr>
 
-      </tbody>
+        <tr>
+          <th>نوع التعريف<br>ID Type</th>
+          <th colspan="2">رقم التعريف<br>ID NO</th>
+          <th colspan="2">جهة الاصدار<br>Issue place</th>
+          <th>تاريخ الاصدار<br>ID date</th>
+          <th>تاريخ الانتهاء<br>Expire date</th>
+        </tr>
+        <tr>
+          <td><%= contract.tenantID.typeOfIdentification %></td>
+          <td colspan="2"><%= contract.tenantID.numberOfIdentification %></td>
+          <td colspan="2"> <%= contract.tenantID.issuingAuthority %></td>
+          <td><%= contract.tenantID.ReleaseDate %></td>
+          <td><%= contract.tenantID.expirationDate %></td>
+        </tr>
 
-      <thead><tr><th colspan="1">نوع التعريف<br>ID Type</th><th colspan="2">رقم التعريف <br>ID NO</th><th colspan="2">جهة الاصدار <br>place of issue</th><th colspan="1">تاريخ الاصدار <br>ID date</th><th colspan="1">تاريخ الانتهاء <br> ID expire date</th></tr></thead>
-      <tbody>
-        <tr><td colspan="1"><%= contract.tenantID.typeOfIdentification %></td><td colspan="2"><%= contract.tenantID.numberOfIdentification %></td><td colspan="2"><%= contract.tenantID.issuingAuthority %></td><td colspan="1"><%= contract.tenantID.ReleaseDate %></td><td colspan="1"><%= contract.tenantID.expirationDate %></td></tr>
-      </tbody>
+        <tr>
+          <th>الجنسية<br>Nationality</th>
+          <th colspan="2">تاريخ الولادة<br>Birthdate</th>
+          <th colspan="2">رقم اجازة القيادة<br>License NO</th>
+          <th>تاريخ الاصدار<br>Issue date</th>
+          <th>تاريخ الانتهاء<br>Expire date</th>
+        </tr>
+        <tr>
+          <td><%= contract.tenantID.nationality %></td>
+          <td colspan="2"><%= contract.tenantID.birthDate %></td>
+          <td colspan="2"><%= contract.tenantID.drivingLicenseNumber %></td>
+          <td><%= contract.tenantID.drivingLicenseIssueDate %></td>
+          <td><%= contract.tenantID.drivingLicenseExpirationDate %></td>
+        </tr>
 
+        <tr>
+          <th colspan="4">Work Address<br>عنوان العمل</th>
+          <th colspan="3">Work phone<br>رقم هاتف العمل</th>
+        </tr>
+        <tr>
+          <td colspan="4"><%= contract.tenantID.workLocation %></td>
+          <td colspan="3"><%= contract.tenantID.workPhone %></td>
+        </tr>
 
+        <tr>
+          <th>اسم المركبة<br>Car name</th>
+          <th>الرقم<br>Car NO</th>
+          <th>النوع<br>Type</th>
+          <th>اللون<br>Color</th>
+          <th>الموديل<br>Model</th>
+          <th>عداد السير<br>Out KM</th>
+          <th>سعر الساعة الزائدة<br>Extra Price</th>
+        </tr>
+        <tr>
+          <td><%= contract.carID.name %></td>
+          <td><%= contract.carID.carNumber %></td>
+          <td><%= contract.carID.carType %></td>
+          <td><%= contract.carID.color %></td>
+          <td><%= contract.carID.carModel %></td>
+          <td><%= contract.carID.walkingCounter %></td>
+          <td><%= contract.overtimeCost %> IQD</td>
+        </tr>
 
-      <thead><tr><th colspan="1">الجنسية<br>Nationality</th><th colspan="2">تاريخ الولادة<br>Birthdate</th><th colspan="2">رقم اجازة القيادة<br>Driving License NO</th><th colspan="1">تاريخ اصدار اجازة القيادة<br>Issuance date of driving the license</th><th colspan="1">تاريخ انتهاء اجازة القيادة<br>Expirations date of driving the license</th></tr></thead>
-      <tbody>
-        <tr><td colspan="1"><%= contract.tenantID.nationality %></td><td colspan="2"><%= contract.tenantID.birthDate %></td><td colspan="2"><%= contract.tenantID.drivingLicenseNumber %></td><td colspan="1"><%= contract.tenantID.drivingLicenseIssueDate %></td><td colspan="1"><%= contract.tenantID.drivingLicenseExpirationDate %></td></tr>
-      </tbody>
+        <tr>
+          <th colspan="2">رقم الشاصي</th>
+          <th>رقم السنوية</th>
+          <th colspan="2">تاريخ الاستلام</th>
+          <th colspan="2">تاريخ التسليم</th>
+        </tr>
+        <tr>
+          <td colspan="2"><%= contract.carID.chassisNumber %></td>
+          <td><%= contract.carID.licenseNumber %></td>
+          <td colspan="2"><%= contract.contractDate %></td>
+          <td colspan="2"><%= contract.returnDate %></td>
+        </tr>
 
+        <tr>
+          <th>نسبة الوقود<br>Fuel</th>
+          <th colspan="2">مدة الايجار<br>Rent Period</th>
+          <th colspan="2">ملاحظات الخروج<br>Out Notes</th>
+          <th colspan="2">ملاحظات العودة<br>Return notes</th>
+        </tr>
+        <tr>
+          <td>60%</td>
+          <td colspan="2"><%= contract.duration %> <%= contract.timeUnit %></td>
+          <td colspan="2">لا توجد ملاحظات</td>
+          <td colspan="2">لم يتم تسجيل عودة المركبة</td>
+        </tr>
 
-      <thead><tr><th colspan="4">Work Address - عنوان العمل</th><th colspan="3">رقم هاتف العمل - Work phone</th></tr></thead>
-      <tbody>
-        <tr><td colspan="4"><%= contract.tenantID.workLocation %></td><td colspan="3"><%= contract.tenantID.workPhone %></td></tr>
-      </tbody>
+        <tr>
+          <th colspan="2">السعر اليومي<br>Day Price</th>
+          <th>المبلغ الاجمالي<br>Total</th>
+          <th colspan="2">المبلغ المدفوع<br>Payment</th>
+          <th colspan="2">المبلغ المستحق<br>Remaining</th>
+        </tr>
+        <tr>
+          <td colspan="2">IQD <%=  contract.carID.dailyPrice %></td>
+          <td>IQD <%= contract.dailyPrice %></td>
+          <td colspan="2">IQD <%= contract.pricePaid %></td>
+          <td colspan="2">IQD <%= contract.RemainingPrice %></td>
+        </tr>
+      </table>
+    </div>
 
+    <div>
+      <table class="signature-table">
+        <tr>
+          <td style="width: 40%">
+            <div class="signature-text">
+              <strong>اسم وتوقيع منظم العقد</strong>
+              <p style="margin-top: 30px;"><%= contract.userID.name %></p>
+            </div>
+          </td>
+          <td style="width: 40%">
+            <div class="signature-text" style="text-align: left;">
+              <strong>اسم وبصمة المستأجر</strong>
+              <p style="margin-top: 30px;"><%= contract.tenantID.name %> </p>
+            </div>
+          </td>
+          <td style="width: 20%">
+            <div class="fingerprint"></div>
+          </td>
+        </tr>
+      </table>
 
-      <thead><tr><th colspan="1">اسم المركبة<br>Car name</th><th colspan="1">الرقم<br>Car NO</th><th colspan="1">النوع<br>Car Type</th><th colspan="1">اللون<br>Car Color</th><th colspan="1">الموديل<br>Car Model</th><th colspan="1">عداد السير<br>Out KM</th><th colspan="1">سعر الساعة الزائدة<br>Extra Hours Price</th></tr></thead>
-      <tbody>
-        <tr><td colspan="1"><%= contract.carID.name %></td><td colspan="1"><%= contract.carID.carNumber %></td><td colspan="1"><%= contract.carID.carType %></td><td colspan="1"><%= contract.carID.color %></td><td colspan="1"><%= contract.carID.carModel %></td><td colspan="1"><%= contract.carID.walkingCounter %></td><td colspan="1"><%= contract.overtimeCost %> IQD</td></tr>
-      </tbody>
-
-      <thead><tr><th colspan="2">رقم الشاصي</th><th colspan="1">رقم السنوية</th><th colspan="2">تاريخ الاستأجار والاستلام</th><th colspan="2">تاريخ الاعادة والتسليم</th></tr></thead>
-      <tbody>
-        <tr><td colspan="2"><%= contract.carID.chassisNumber %></td><td colspan="1"><%= contract.carID.licenseNumber %></td><td colspan="2"><%= contract.contractDate %></td><td colspan="2"><%= contract.returnDate %></td>
-      </tbody>
-
-      <thead><tr><th colspan="1">نسبة الوقود<br>Fuel Meter</th><th colspan="2">مدة الايجار<br>Rent Period</th><th colspan="2">ملاحظات الخروج<br>Out Notes</th><th colspan="2">ملاحظات العودة<br>Return notes</th></tr></thead>
-      <tbody>
-        <tr><td colspan="1">60</td><td colspan="2"><%= contract.duration %> <%= contract.timeUnit %></td><td colspan="2">لا توجد ملاحظات</td><td colspan="2">لم يتم تسجيل عودة المركبة</td>
-      </tbody>
-
-
-      <thead><tr><th colspan="2">السعر اليومي<br>Day Price</th><th colspan="1">المبلغ الاجمالي<br>Total Price</th><th colspan="2">المبلغ المدفوع<br>Payment</th><th colspan="2">المبلغ المستحق<br>Remaining</th></tr></thead>
-      <tbody>
-        <tr><td colspan="2">IQD <%=  contract.carID.dailyPrice %></td><td colspan="1">IQD <%= contract.dailyPrice %></td><td colspan="2">IQD <%= contract.pricePaid %></td><td colspan="2">IQD <%= contract.RemainingPrice %></td>
-      </tbody>
-    </table>
-
-    <!-- Signature -->
-    <table class="signature-table">
-
-      <tr>
-        <td class="signature-text">
-          <strong>اسم وتوقيع منظم العقد</strong>
-          <p><%= contract.userID.name %></p>
-        </td>
-        <td class="signature-text" style="text-align: left;">
-          <strong>اسم وبصمة المستأجر</strong>
-          <p><%= contract.tenantID.name %></p>
-        </td>
-        <td class="fingerprint-cell">
-          <div class="fingerprint"></div>
-        </td>
-      </tr>
-    </table>
-
-    <footer class="footer-info">
-      موصل / قرب ترفكلايت المصارف شركة الماس لتاجر السيارات - 07510553432 / 07735256513
-    </footer>
+      <div class="footer-info">
+        موصل / قرب ترفكلايت المصارف شركة الماس لتاجر السيارات - 07510553432 / 07735256513
+      </div>
+    </div>
   </div>
 </body>
 </html>
