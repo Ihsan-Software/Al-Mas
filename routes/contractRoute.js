@@ -21,6 +21,8 @@ const {
   getInsurance,
   getOneInsurance,
   getImportsPricesByDate,
+  // for pdf
+  getContractInfo,
   sendHtmlPage,
   sendEjsFile,
   createPdfFromEjsFile
@@ -54,7 +56,9 @@ router.route("/search")
 router.route("/createPdfFromEjsFile/:id")
   .get(createPdfFromEjsFile)
 
-
+router.route("/getContractInfo/:id")
+  .get(getContractInfo)
+  
 router
   .route("/:id")
   .get(getContractValidator, getContract)

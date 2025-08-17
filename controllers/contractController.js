@@ -253,7 +253,22 @@ exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
   res.status(200).json(result[0] || { perCar: [], totalForAllCars: 0 });
 });
 
+// get contract info for inject it in pdf from client
+exports.getContractInfo = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  let newQuery
+  const contract = await Contract.findById(id).populate([
+    { path: 'tenantID' },
+    { path: 'carID'},
+    { path: 'userID'}
+  ]);
+  if (!contract) {
+    return next(new ApiError(`No contract found for ID ${id}`, 404));
+  }
 
+  res.status(200).json({ data: contract });
+
+});
 
 exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
