@@ -273,7 +273,11 @@ exports.getContractInfo = asyncHandler(async (req, res, next) => {
 exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   let newQuery
-  const contract = await Contract.findById(id);
+  const contract = await Contract.findById(id).populate([
+    { path: 'tenantID' },
+    { path: 'carID'},
+    { path: 'userID'}
+  ]);
   if (!contract) {
     return next(new ApiError(`No contract found for ID ${id}`, 404));
   }
