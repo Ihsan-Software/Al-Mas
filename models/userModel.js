@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
     temporarilyDeleted:{
         type: Boolean,
         default: false
+    },
+    userDiscount:{
+    type: String,
+    default: "0",
     }
 },
 { timestamps: true }

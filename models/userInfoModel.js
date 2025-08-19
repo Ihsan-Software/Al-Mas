@@ -23,10 +23,7 @@ const userInfoSchema = new mongoose.Schema(
         type: String,
         enum: ["manager", "admin"],
         default: "manager",
-    },
-    userDiscount:{
-        type: String
-    },
+    }
 },
 { timestamps: true }
 );

@@ -20,11 +20,11 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
     if (!req.file) {
         return next();
     }
-    const filename = `user-${uuidv4()}-${Date.now()}.jpeg`;
+    const filename = `user-${uuidv4()}-${Date.now()}.webp`;
     await sharp(req.file.buffer)
         .resize(600, 600)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
+        .toFormat("webp")
+        .webp({ quality: 90 })
         .toFile(`uploads/users/${filename}`);
 
     // save image in db
@@ -73,7 +73,43 @@ const userInfo = await UserInfo.create({
 // @desc    Update specific user
 // @route   PUT /users/:id
 // @access  Private/ Admin
-exports.updateUser = factory.updateOne(User)
+exports.updateUser = asyncHandler(async (req, res, next) => {
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        return next(new ApiError(`No user for this id ${req.params.id}`, 404));
+    }
+
+    // Update User fields
+    if (req.body.name) user.name = req.body.name;
+    if (req.body.userDiscount) user.userDiscount = req.body.userDiscount;
+    if (req.body.temporarilyDeleted) {
+        user.temporarilyDeleted = req.body.temporarilyDeleted;
+    }
+
+    // Update UserInfo fields
+    if (req.body.email || req.body.phone || req.body.image || req.body.role) {
+        const userInfo = await UserInfo.findById(user.userInfoID);
+        if (!userInfo) {
+          return next(new ApiError(`No userInfo found for this user`, 404));
+        }
+
+        if (req.body.email) userInfo.email = req.body.email;
+        if (req.body.phone) userInfo.phone = req.body.phone;
+        if (req.body.image) userInfo.image = req.body.image;
+        if (req.body.role) userInfo.role = req.body.role;
+        await userInfo.save();
+    }
+
+    await user.save();
+    const updatedUser = await User.findById(user._id);
+
+    return res.status(200).json({
+        message: "User & UserInfo updated successfully",
+        data: updatedUser,
+    });
+
+});
 // @desc    Delete specific user
 // @route   DELETE /users/:id
 // @access  Private/ Admin
@@ -111,18 +147,19 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 // @route   PUT /users/updateMyPassword
 // @access  Private/Protect
 exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
-  // 1) Update user password based user payload (req.user._id)
-    const user = await User.findByIdAndUpdate(
-        req.params.id,
-        {
-        password: await bcrypt.hash(req.body.newPassword, 12),
-        },
-        {
-        new: true,
-        runValidators: true,
-        }
-    );
+const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ApiError(`No user found for this id ${req.params.id}`, 404));
+  }
 
-    // 2) Generate token
+  // 2) Get linked UserInfo (where password is stored)
+  const userInfo = await UserInfo.findById(user.userInfoID);
+  if (!userInfo) {
+    return next(new ApiError(`No userInfo found for this user`, 404));
+  }
+
+  userInfo.password = await bcrypt.hash(req.body.newPassword, 12);
+
+  await userInfo.save();
     res.status(200).json({ data: user });
 });

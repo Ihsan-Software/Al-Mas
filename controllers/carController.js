@@ -20,11 +20,11 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
     if (!req.file) {
         return next();
     }
-    const filename = `car-${uuidv4()}-${Date.now()}.jpeg`;
+    const filename = `car-${uuidv4()}-${Date.now()}.webp`;
     await sharp(req.file.buffer)
         .resize(600, 600)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
+        .toFormat("webp")
+        .webp({ quality: 90 })
         .toFile(`uploads/cars/${filename}`);
 
     // save image in db

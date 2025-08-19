@@ -25,7 +25,7 @@ const router = express.Router();
 
 // FOR ADMIN
 router.use(auth.protect);
-router.use(auth.allowedTo("admin"));
+router.use(auth.allowedTo("admin","manager"));
 
 router.route("/")
   .get(getFines)

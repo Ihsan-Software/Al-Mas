@@ -84,6 +84,8 @@ exports.updateUserValidator = [
   check("role").optional(),
   check("userDiscount").optional(),
   check("temporarilyDeleted").optional(),
+  check("userDiscount").optional(),
+
   validatorMiddleware,
 ];
 

@@ -39,6 +39,7 @@ router.route("/htmlPage/:id")
   .get(sendHtmlPage)
 
 router.use(auth.protect);
+router.route('/getImportsUseDate').get(auth.allowedTo("admin"), getImportsPricesByDate);
 router.use(auth.allowedTo("admin","manager"));
 
 router.route("/")
@@ -47,7 +48,6 @@ router.route("/")
 
 router.route('/getInsurance').get(getInsurance);
 router.route('/getOneInsurance/:id').get(getOneInsurance);
-router.route('/getImportsUseDate').get(getImportsPricesByDate);
 
 router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
