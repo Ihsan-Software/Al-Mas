@@ -21,8 +21,8 @@ const userInfoSchema = new mongoose.Schema(
     phone: String,
     role: {
         type: String,
-        enum: ["manager", "admin"],
-        default: "manager",
+        enum: ["manager", "employee"],
+        default: "employee",
     }
 },
 { timestamps: true }
