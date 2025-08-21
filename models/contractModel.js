@@ -103,6 +103,10 @@ const contractSchema = new mongoose.Schema(
     dailyPrice: {
         type: Number
     },
+    isCarBack:{
+    type: Boolean,
+    default: false
+   },
 
 },
 { timestamps: true }

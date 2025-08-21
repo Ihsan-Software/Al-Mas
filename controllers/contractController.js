@@ -15,17 +15,37 @@ const factory = require("./handlersFactory");
 
 const Contract = require("../models/contractModel");
 const Car = require("../models/carModel")
-
+const statistics = require("./statisticsController")
 
 //  **** Admin CRUD ****
 
 // @desc    Get list of Contract
 // @route   GET /Contract
 // @access  Private/ Admin, Manager
-exports.getContracts = factory.getAllDocWthNoRelation(Contract,[
+exports.getContracts = asyncHandler(async (req, res, next) => {
+const { returnDate } = req.query;
+  let filter = {};
+
+  const currentDate = dayjs().format("YYYY-MM-DD HH:mm");
+
+  if (returnDate === "true") {
+    filter.isCarBack = false
+    filter.returnDate = { $lte: currentDate };
+  } else if (returnDate === "false") {
+    filter.returnDate = { $gt: currentDate };
+  }
+
+  const contracts = await Contract.find(filter).populate([
     { path: 'carID', select: 'name'},
     { path: 'tenantID', select: 'name'},
-  ], 'contractDate');
+  ]).select('contractDate');
+
+  res.status(200).json({
+    results: contracts.length,
+    data: contracts,
+  });
+
+});
 
 // @desc    Get specific Contract by id
 // @route   GET /Contract/:id
@@ -89,21 +109,59 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
 // @route   PUT /Contract/:id
 // @access  Private/ Admin, Manager
 exports.updateContract = asyncHandler(async (req, res, next) => {
-  const isAdmin = req.user.userInfoID.role === "admin"; // or check by role ID if you store it differently
+  const isAdmin = req.user.userInfoID.role === "admin";
 
   // If not admin → remove dailyPrice from update data
   if (!isAdmin && req.body.dailyPrice !== undefined) {
     delete req.body.dailyPrice;
   }
 
-  const contract = await Contract.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
+  // Fetch existing contract first (to keep values like dailyPrice, pricePaid, etc.)
+  let contract = await Contract.findById(req.params.id);
   if (!contract) {
     return next(new ApiError(`No contract for this id ${req.params.id}`, 404));
   }
+
+  // --- 🔹 Recalculate logic if duration/timeUnit is updated ---
+  if (req.body.duration !== undefined || req.body.timeUnit !== undefined) {
+    const duration = req.body.duration ?? contract.duration;
+    const timeUnit = (req.body.timeUnit ?? contract.timeUnit).toLowerCase();
+
+    const multipliers = {
+      hour: 1 / 24, // 1 hour = 1/24 of a day
+      day: 1,
+      week: 7,
+      month: 30,
+    };
+
+    const unitMultiplier = multipliers[timeUnit];
+    if (unitMultiplier === undefined) {
+      return next(new ApiError(`Invalid time unit: ${timeUnit}`, 400));
+    }
+
+    const dailyPrice = contract.dailyPrice; // keep existing dailyPrice
+    const discount = req.body.discount ?? contract.discount;
+    const pricePaid = req.body.pricePaid ?? contract.pricePaid;
+
+    const totalPrice = dailyPrice * duration * unitMultiplier;
+    const priceAfterDiscount = totalPrice - (totalPrice * (discount / 100));
+    const RemainingPrice = priceAfterDiscount - pricePaid;
+
+    // Calculate dates
+    const returnDate = dayjs(contract.contractDate).add(duration, timeUnit).format("YYYY-MM-DD HH:mm");
+
+    // Put into update body
+    req.body.totalPrice = totalPrice;
+    req.body.priceAfterDiscount = priceAfterDiscount;
+    req.body.RemainingPrice = RemainingPrice;
+    req.body.returnDate = returnDate;
+  }
+
+  // --- 🔹 Now update ---
+  contract = await Contract.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
   res.status(200).json({ data: contract });
 });
@@ -134,124 +192,13 @@ exports.getContractUseName = asyncHandler(async (req, res, next) => {
 });
 
 //Insurance التامينات
-exports.getInsurance = asyncHandler(async (req, res) => {
-
-  const elevenDaysAgo = new Date();
-  elevenDaysAgo.setDate(elevenDaysAgo.getDate() - 11);
-
-  const result = await Contract.aggregate([
-    {
-      $match: {
-        createdAt: { $lte: elevenDaysAgo },
-        isReturn: false 
-      }
-    },
-    // Lookup tenant info
-    {
-      $lookup: {
-        from: 'tenants',
-        localField: 'tenantID',
-        foreignField: '_id',
-        as: 'tenant'
-      }
-    },
-    { $unwind: '$tenant' },
-
-    // Lookup car info
-    {
-      $lookup: {
-        from: 'cars',
-        localField: 'carID',
-        foreignField: '_id',
-        as: 'car'
-      }
-    },
-    { $unwind: '$car' },
-
-    {
-      $project: {
-        _id: 1, // Contract ID
-        tenantName: '$tenant.name',
-        carName: '$car.name',
-        insuranceType: 1,
-        createdAt: 1
-      }
-    }
-  ]);
-
-  res.status(200).json({ result });
-});
+exports.getInsurance = statistics.getInsurance
 
 
 exports.getOneInsurance = factory.getOne(Contract,'',' governorate insuranceType');
 
 // imports 
-exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
-  const { date } = req.query;
-
-  if (!date) {
-    return res.status(400).json({ message: 'Date is required in query' });
-  }
-
-  // Start of month
-  const startDate = new Date(date);
-  startDate.setDate(1); // first day of month
-  startDate.setHours(0, 0, 0, 0);
-
-  // End of month
-  const endDate = new Date(startDate);
-  endDate.setMonth(endDate.getMonth() + 1); // go to next month
-  endDate.setDate(0); // last day of current month
-  endDate.setHours(23, 59, 59, 999);
-
-  const result = await Contract.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: startDate, $lte: endDate }
-      }
-    },
-    {
-      $lookup: {
-        from: 'cars',
-        localField: 'carID',
-        foreignField: '_id',
-        as: 'car'
-      }
-    },
-    { $unwind: '$car' },
-    {
-      $group: {
-        _id: '$car.name',
-        carStatus: { $first: 'تاجير' },
-        contractDate: { $first: '$contractDate' },
-        totalPriceAfterDiscount: { $sum: '$priceAfterDiscount' }
-      }
-    },
-    {
-      $group: {
-        _id: null,
-        perCar: {
-          $push: {
-            carName: '$_id',
-            carStatus: '$carStatus',
-            contractDate: '$contractDate',
-            totalPriceAfterDiscount: '$totalPriceAfterDiscount'
-          }
-        },
-        totalForAllCars: { $sum: '$totalPriceAfterDiscount' }
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        perCar: 1,
-        totalForAllCars: 1
-      }
-    }
-  ]);
-
-  res.status(200).json(result[0] || { perCar: [], totalForAllCars: 0 });
-});
+exports.getImportsPricesByDate = statistics.getImportsPricesByDate
 
 // get contract info for inject it in pdf from client
 exports.getContractInfo = asyncHandler(async (req, res, next) => {

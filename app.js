@@ -16,6 +16,7 @@ const contractRouter = require("./routes/contractRoute");
 const bookingRouter = require("./routes/bookingRoute");
 const finesRoute = require("./routes/finesRoute");
 const exportRoute = require("./routes/exportRoute");
+const statisticsRoute = require("./routes/statisticsRoute");
 const app = express();
 
 
@@ -40,6 +41,7 @@ app.use('/contract', contractRouter);
 app.use('/booking', bookingRouter);
 app.use('/fines', finesRoute);
 app.use('/export', exportRoute);
+app.use('/statistics', statisticsRoute);
 
 app.all('/*splat', (req, res, next) => {
   next(new ApiError(`can't find this route: ${req.originalUrl}`, 400));
