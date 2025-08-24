@@ -8,7 +8,7 @@ const auth = require("../controllers/authController");
 const router = express.Router();
 
 router.use(auth.protect);
-router.use(auth.allowedTo("admin"));
+router.use(auth.allowedTo("admin","employee"));
 
 // FOR manager
 router.route("/").get(getStatistics)
