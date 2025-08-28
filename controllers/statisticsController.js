@@ -5,6 +5,7 @@ const Contract = require("../models/contractModel");
 const Car = require("../models/carModel")
 const Booking = require("../models/bookingModel")
 const Export  = require("../models/exportModel");
+const ImportModel  = require("../models/importModel");
 const Fines = require("../models/finesModel");
 const Tenant = require("../models/tenantModel");
 const User = require("../models/userModel");
@@ -181,9 +182,17 @@ exports.getStatistics = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  const totalContractAfterDiscount =
-    contractTotalResult[0]?.totalPriceAfterDiscount || 0;
 
+  const importsPrice = await ImportModel.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalImportsPrice: { $sum: "$price" },
+      },
+    },
+  ]);
+  const totalContractAfterDiscount =
+    contractTotalResult[0]?.totalPriceAfterDiscount + importsPrice[0].totalImportsPrice||importsPrice[0].totalImportsPrice+ 0;
   // --- Final balance ---
   let balance;
     if (totalExportPrice > totalContractAfterDiscount) {
@@ -210,5 +219,95 @@ exports.getStatistics = asyncHandler(async (req, res, next) => {
       },
       balance, 
     },
+  });
+});
+
+exports.getCarStatistics = asyncHandler(async (req, res, next) => {
+
+  const result = await Contract.aggregate([
+    // 1) Group contracts per car
+    {
+      $group: {
+        _id: "$carID",
+        totalContractPrice: { $sum: "$priceAfterDiscount" },
+        contractsCount: { $sum: 1 }
+      }
+    },
+
+    // 2) Lookup imports per car
+    {
+      $lookup: {
+        from: "imports",
+        localField: "_id",
+        foreignField: "carID",
+        as: "imports"
+      }
+    },
+    {
+      $addFields: {
+        totalImportPrice: { $sum: "$imports.price" },
+        importsCount: { $size: "$imports" }
+      }
+    },
+
+    // 3) Lookup exports per car
+    {
+      $lookup: {
+        from: "exports",
+        localField: "_id",
+        foreignField: "carID",
+        as: "exports"
+      }
+    },
+    {
+      $addFields: {
+        totalExportPrice: { $sum: "$exports.price" },
+        exportsCount: { $size: "$exports" }
+      }
+    },
+
+    // 4) Lookup car details
+    {
+      $lookup: {
+        from: "cars",
+        localField: "_id",
+        foreignField: "_id",
+        as: "car"
+      }
+    },
+    { $unwind: "$car" },
+
+    // 5) Calculate net total (contracts + imports - exports)
+    {
+      $addFields: {
+        netProfit: {
+          $subtract: [
+            { $add: ["$totalContractPrice", "$totalImportPrice"] },
+            "$totalExportPrice"
+          ]
+        }
+      }
+    },
+
+    // 6) Shape the output
+    {
+      $project: {
+        _id: 0,
+        carID: "$car._id",
+        carName: "$car.name",
+        contractsCount: 1,
+        totalContractPrice: 1,
+        importsCount: 1,
+        totalImportPrice: 1,
+        exportsCount: 1,
+        totalExportPrice: 1,
+        netProfit: 1
+      }
+    }
+  ]);
+
+  res.status(200).json({
+    results: result.length,
+    data: result
   });
 });

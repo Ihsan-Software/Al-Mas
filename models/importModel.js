@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const exportSchema = new mongoose.Schema({
+const importSchema = new mongoose.Schema({
   userID: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
@@ -9,16 +9,16 @@ const exportSchema = new mongoose.Schema({
   carID: {
     type: mongoose.Schema.ObjectId,
     ref: 'Car',
-    default: null
+    default: null,
   },
   title: {
     type: String,
-    required: [true, 'Export title is required'],
+    required: [true, 'Import title is required'],
     trim: true,
   },
   details: {
     type: String,
-    required: [true, 'Export details are required'],
+    required: [true, 'Import details are required'],
     trim: true,
   },
   notes: {
@@ -33,6 +33,6 @@ const exportSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-const Export = mongoose.model('Export', exportSchema);
+const ImportModel  = mongoose.model('Import', importSchema);
 
-module.exports = Export;
+module.exports = ImportModel ;

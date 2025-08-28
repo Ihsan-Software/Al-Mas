@@ -1,43 +1,42 @@
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
-const Export  = require("../models/exportModel");
+const ImportModel  = require("../models/importModel");
 const factory = require("./handlersFactory");
 
 
 
 // **** Admin CRUD ****
 
-// @desc    Get list of Exports
-// @route   GET /exports
+// @desc    Get list of Import
+// @route   GET /Import
 // @access  Private / Admin, Manager
-exports.getExports = factory.getAll(Export,'','-carID');
-
-// @desc    Get specific Export by ID
-// @route   GET /exports/:id
+exports.getImports = factory.getAll(ImportModel,'','-carID');
+// @desc    Get specific Import by ID
+// @route   GET /Import/:id
 // @access  Private / Admin, Manager
-exports.getExport = factory.getOne(Export,'carID');
+exports.getImport = factory.getOne(ImportModel,'carID');
 
-// @desc    Create new Export
-// @route   POST /exports
+// @desc    Create new Import
+// @route   POST /Imports
 // @access  Private / Admin, Manager
-exports.createExport = factory.createOne(Export);
+exports.createImport = factory.createOne(ImportModel);
 
-// @desc    Update specific Export
-// @route   PATCH /exports/:id
+// @desc    Update specific Import
+// @route   PATCH /Import/:id
 // @access  Private / Admin, Manager
-exports.updateExport = factory.updateOne(Export);
+exports.updateImport = factory.updateOne(ImportModel);
 
-// @desc    Delete specific Export
-// @route   DELETE /exports/:id
+// @desc    Delete specific Import
+// @route   DELETE /Imports/:id
 // @access  Private / Admin, Manager
-exports.deleteExport = factory.deleteOne(Export);
+exports.deleteImport = factory.deleteOne(ImportModel);
 
 
-exports.getExportsByDate = asyncHandler(async (req, res) => {
+exports.getImportsByDate = asyncHandler(async (req, res) => {
   const dateQueryParam = req.query.date; // e.g. '2025-07-28'
-  let  exports
+  let  result
     if (!dateQueryParam) {
-       exports = await Export.find().select('-carID');
+       result = await ImportModel.find();
     }
     else{
           // Convert to Date objects
@@ -51,7 +50,7 @@ exports.getExportsByDate = asyncHandler(async (req, res) => {
           endDate.setDate(0); // last day of current month
           endDate.setHours(23, 59, 59, 999);
     
-          exports = await Export.find({
+          result = await ImportModel.find({
               createdAt: {
                 $gte: startDate,
                 $lte: endDate
@@ -63,7 +62,7 @@ exports.getExportsByDate = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: 'success',
-    results: exports.length,
-    data: exports
+    results: result.length,
+    data: result
   });
 });

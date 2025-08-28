@@ -3,8 +3,28 @@ const ApiError = require('../utils/apiError');
 
 exports.getAll = (Model, populationOpt, selectedFields) =>
   asyncHandler(async (req, res) => {
-    let query = Model.find({ temporarilyDeleted: false }).select(selectedFields);
+    let filter = {};
 
+    const modelName = Model.modelName; // "Export" or "Import"
+    // Only apply carID filter if this is Export or Import model
+    if (["Export", "Import"].includes(modelName) && req.query.hasCar !== undefined) {
+      if (req.query.hasCar === "true") {
+        filter.carID = { $ne: null }; // with car
+      } else if (req.query.hasCar === "false") {
+        filter.carID = null; // without car
+      }
+    } 
+    else if(Model.modelName ==='Car' && req.query.carStatus!==undefined){
+      filter.carStatus =  { $regex: `^${req.query.carStatus.trim()}$`, $options: "i" };
+    }
+    else {
+      // hasCar NOT sent → use temporarilyDeleted filter
+      filter = { temporarilyDeleted: false };
+    }
+    // Build the query
+    let query = Model.find(filter).select(selectedFields);
+
+    // Apply population if needed
     if (populationOpt) {
       query = query.populate(populationOpt);
     }
@@ -13,7 +33,7 @@ exports.getAll = (Model, populationOpt, selectedFields) =>
 
     res.status(200).json({
       results: documents.length,
-      data: documents
+      data: documents,
     });
   });
 
