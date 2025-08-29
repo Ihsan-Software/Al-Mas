@@ -55,7 +55,7 @@ exports.getImportsByDate = asyncHandler(async (req, res) => {
                 $gte: startDate,
                 $lte: endDate
               }
-            });
+            }).populate({path: 'carID', select: 'name'});
 
           }
 
