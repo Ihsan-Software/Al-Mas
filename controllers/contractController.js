@@ -299,3 +299,28 @@ exports.createPdfFromEjsFile = asyncHandler(async (req, res, next) => {
 });
 
 
+exports.updateReturnContract = asyncHandler(async (req, res, next) => {
+
+  const contract = await Contract.findByIdAndUpdate(
+    req.params.id,
+    { isCarBack: true },
+    { new: true, runValidators: true }
+  );
+
+  if (!contract) {
+    return next(new ApiError(`No contract for this id ${req.params.id}`, 404));
+  }
+
+  if (contract.carID) {
+    await Car.findByIdAndUpdate(
+      contract.carID,
+      { carStatus: "متاحة" },
+      { new: true, runValidators: true }
+    );
+  }
+
+  res.status(200).json({
+    message: "successful"
+  });
+});
+
