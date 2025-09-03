@@ -175,14 +175,20 @@ exports.getStatistics = asyncHandler(async (req, res, next) => {
 });
 
 exports.getCarStatistics = asyncHandler(async (req, res, next) => {
-
-  const result = await Contract.aggregate([
-    // 1) Group contracts per car
+  const result = await Car.aggregate([
+    // 1) Lookup contracts per car
     {
-      $group: {
-        _id: "$carID",
-        totalContractPrice: { $sum: "$priceAfterDiscount" },
-        contractsCount: { $sum: 1 }
+      $lookup: {
+        from: "contracts",
+        localField: "_id",
+        foreignField: "carID",
+        as: "contracts"
+      }
+    },
+    {
+      $addFields: {
+        totalContractPrice: { $sum: "$contracts.priceAfterDiscount" },
+        contractsCount: { $size: "$contracts" }
       }
     },
 
@@ -218,18 +224,7 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
       }
     },
 
-    // 4) Lookup car details
-    {
-      $lookup: {
-        from: "cars",
-        localField: "_id",
-        foreignField: "_id",
-        as: "car"
-      }
-    },
-    { $unwind: "$car" },
-
-    // 5) Calculate net total (contracts + imports - exports)
+    // 4) Calculate net total (contracts + imports - exports)
     {
       $addFields: {
         netProfit: {
@@ -241,12 +236,12 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
       }
     },
 
-    // 6) Shape the output
+    // 5) Shape the output
     {
       $project: {
         _id: 0,
-        carID: "$car._id",
-        carName: "$car.name",
+        carID: "$_id",
+        carName: "$name",
         contractsCount: 1,
         totalContractPrice: 1,
         importsCount: 1,
