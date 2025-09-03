@@ -107,6 +107,10 @@ const contractSchema = new mongoose.Schema(
     type: Boolean,
     default: false
    },
+   insuranceNotification:{
+    type: Boolean,
+    default: false
+   }
 
 },
 { timestamps: true }

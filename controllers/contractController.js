@@ -192,7 +192,110 @@ exports.getContractUseName = asyncHandler(async (req, res, next) => {
 });
 
 //Insurance التامينات
-exports.getInsurance = statistics.getInsurance
+exports.getInsurance = asyncHandler(async (req, res) => {
+
+  const elevenDaysAgo = dayjs().subtract(11, "day").format("YYYY-MM-DD HH:mm");
+
+  const result = await Contract.aggregate([
+    {
+      $match: {
+        returnDate: { $lte: elevenDaysAgo },
+        isReturn: false 
+      }
+    },
+    // Lookup tenant info
+    {
+      $lookup: {
+        from: 'tenants',
+        localField: 'tenantID',
+        foreignField: '_id',
+        as: 'tenant'
+      }
+    },
+    { $unwind: '$tenant' },
+
+    // Lookup car info
+    {
+      $lookup: {
+        from: 'cars',
+        localField: 'carID',
+        foreignField: '_id',
+        as: 'car'
+      }
+    },
+    { $unwind: '$car' },
+
+    {
+      $project: {
+        _id: 1, // Contract ID
+        tenantName: '$tenant.name',
+        carName: '$car.name',
+        insuranceType: 1,
+        returnDate: 1
+      }
+    }
+  ]);
+
+  res.status(200).json({ result});
+});
+
+exports.insuranceNotification = asyncHandler(async (req, res) => {
+
+  const elevenDaysAgo = dayjs().subtract(11, "day").format("YYYY-MM-DD HH:mm");
+
+  const result = await Contract.aggregate([
+    {
+      $match: {
+        returnDate: { $lte: elevenDaysAgo },
+        isReturn: false,
+        insuranceNotification:false
+      }
+    },
+    // Lookup tenant info
+    {
+      $lookup: {
+        from: 'tenants',
+        localField: 'tenantID',
+        foreignField: '_id',
+        as: 'tenant'
+      }
+    },
+    { $unwind: '$tenant' },
+
+    // Lookup car info
+    {
+      $lookup: {
+        from: 'cars',
+        localField: 'carID',
+        foreignField: '_id',
+        as: 'car'
+      }
+    },
+    { $unwind: '$car' },
+
+    {
+      $project: {
+        _id: 1, // Contract ID
+        tenantName: '$tenant.name',
+        carName: '$car.name',
+        insuranceType: 1,
+        returnDate: 1
+      }
+    }
+  ]);
+  
+    // extract ids from result
+  const ids = result.map(r => r._id);
+
+  // update all found contracts
+  if (ids.length > 0) {
+    await Contract.updateMany(
+      { _id: { $in: ids } },
+      { $set: { insuranceNotification: true } }
+    );
+  }
+  res.status(200).json({ Notification:result.length });
+});
 
 
 exports.getOneInsurance = factory.getOne(Contract,'',' governorate insuranceType');

@@ -11,54 +11,6 @@ const Tenant = require("../models/tenantModel");
 const User = require("../models/userModel");
 const UserInfo = require("../models/userInfoModel");
 
-//Insurance التامينات
-exports.getInsurance = asyncHandler(async (req, res) => {
-
-  const elevenDaysAgo = dayjs().subtract(11, "day").format("YYYY-MM-DD HH:mm");
-
-  const result = await Contract.aggregate([
-    {
-      $match: {
-        returnDate: { $lte: elevenDaysAgo },
-        isReturn: false 
-      }
-    },
-    // Lookup tenant info
-    {
-      $lookup: {
-        from: 'tenants',
-        localField: 'tenantID',
-        foreignField: '_id',
-        as: 'tenant'
-      }
-    },
-    { $unwind: '$tenant' },
-
-    // Lookup car info
-    {
-      $lookup: {
-        from: 'cars',
-        localField: 'carID',
-        foreignField: '_id',
-        as: 'car'
-      }
-    },
-    { $unwind: '$car' },
-
-    {
-      $project: {
-        _id: 1, // Contract ID
-        tenantName: '$tenant.name',
-        carName: '$car.name',
-        insuranceType: 1,
-        returnDate: 1
-      }
-    }
-  ]);
-
-  res.status(200).json({ result });
-});
-
 // imports 
 exports.getImportsPricesByDate = asyncHandler(async (req, res, next) => {
   const { date } = req.query;

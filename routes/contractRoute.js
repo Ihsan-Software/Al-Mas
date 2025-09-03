@@ -20,6 +20,7 @@ const {
   getContractUseName,
   getInsurance,
   getOneInsurance,
+  insuranceNotification,
   getImportsPricesByDate,
   updateReturnContract,
   // for pdf
@@ -49,7 +50,7 @@ router.route("/")
 
 router.route('/getInsurance').get(getInsurance);
 router.route('/getOneInsurance/:id').get(getOneInsurance);
-
+router.route('/insuranceNotification').get(insuranceNotification);
 router.route("/search")
 .get(getContractUseNameValidator, getContractUseName)
 
