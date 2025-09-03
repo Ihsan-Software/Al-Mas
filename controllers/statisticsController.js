@@ -98,14 +98,18 @@ exports.getStatistics = asyncHandler(async (req, res, next) => {
     "غير متاحة": "Unavailable"
   };
 
-  // Convert array → object with English keys
-  const carsByStatusObj = carsByStatus.reduce((acc, item) => {
-    // Normalize string (remove quotes/spaces)
-    let key = item._id.trim().replace(/['"]+/g, "");
-    const englishKey = statusMap[key] || key;
-    acc[englishKey] = item.count;
-    return acc;
-  }, {});
+  // Initialize object with all statuses = 0
+const carsByStatusObj = Object.values(statusMap).reduce((acc, englishKey) => {
+  acc[englishKey] = 0;
+  return acc;
+}, {});
+
+// Fill with actual counts
+carsByStatus.forEach(item => {
+  let key = item._id?.trim().replace(/['"]+/g, "");
+  const englishKey = statusMap[key] || key;
+  carsByStatusObj[englishKey] = item.count;
+});
 
   //imports
   const currentDate = dayjs().format("YYYY-MM-DD HH:mm");
