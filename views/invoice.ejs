@@ -40,7 +40,7 @@
     .table2 {
       width: 100%;
       border-collapse: collapse;
-      font-size:  10px;
+      font-size:  20px;
       margin: 15px 0px;
     }
     .table2 th {
@@ -106,7 +106,7 @@
           <td colspan="1" style="text-align: left;"><p>NO: <%= contract.contractNumber %></p></td>
         </tr>
         <tr>
-          <td colspan="1" style="text-align: left;">$<%= contract.contractDate %></td>
+          <td colspan="1" style="text-align: left;"><%= contract.contractDate %></td>
         </tr>
         <tr>
           <td colspan="1"><p>استلمت من السيد/ة(Received from Mr./Ms.): <%= contract.tenantID.name %></p></td>
