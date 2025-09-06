@@ -8,10 +8,10 @@ const auth = require("../controllers/authController");
 const router = express.Router();
 
 router.use(auth.protect);
-router.use(auth.allowedTo("admin"));
+router.route("/carStatistics").get(auth.allowedTo("admin"),getCarStatistics)
+router.use(auth.allowedTo("admin","employee"));
 
-// FOR manager
+// FOR admin and employee
 router.route("/").get(getStatistics)
-router.route("/carStatistics").get(getCarStatistics)
 
 module.exports = router;
