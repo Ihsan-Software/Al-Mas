@@ -18,6 +18,7 @@ const finesRoute = require("./routes/finesRoute");
 const exportRoute = require("./routes/exportRoute");
 const importRoute = require("./routes/importRoute");
 const statisticsRoute = require("./routes/statisticsRoute");
+const systemRoute = require("./routes/systemRoute");
 const app = express();
 
 
@@ -44,6 +45,7 @@ app.use('/fines', finesRoute);
 app.use('/export', exportRoute);
 app.use('/import', importRoute);
 app.use('/statistics', statisticsRoute);
+app.use('/system', systemRoute);
 
 app.all('/*splat', (req, res, next) => {
   next(new ApiError(`can't find this route: ${req.originalUrl}`, 400));
