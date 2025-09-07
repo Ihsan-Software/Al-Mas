@@ -163,3 +163,10 @@ const user = await User.findById(req.params.id);
   await userInfo.save();
     res.status(200).json({ data: user });
 });
+
+
+exports.getUserDiscount = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.params.id)
+
+    res.status(200).json({ userDiscount:user.userDiscount});
+});

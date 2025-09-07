@@ -12,6 +12,7 @@ const {
   // FOR ADMIN
   getUsers,
   getUser,
+  getUserDiscount,
   createUser,
   updateUser,
   updateLoggedUserPassword,
@@ -26,6 +27,8 @@ const router = express.Router();
 
 // FOR ADMIN
 router.use(auth.protect);
+router.route("/userDiscount/:id")
+.get(getUserDiscount)
 router.use(auth.allowedTo("admin"));
 router.route("/")
 .get(getUsers)
