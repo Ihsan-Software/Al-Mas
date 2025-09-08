@@ -4,7 +4,6 @@ const ApiError = require('../utils/apiError');
 exports.getAll = (Model, populationOpt, selectedFields) =>
   asyncHandler(async (req, res) => {
     let filter = {};
-
     const modelName = Model.modelName; // "Export" or "Import"
     // Only apply carID filter if this is Export or Import model
     if (["Export", "Import"].includes(modelName) && req.query.hasCar !== undefined) {
@@ -76,6 +75,7 @@ exports.getOne = (Model, populationOpt, selectedFields) =>
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
     req.body.userID = req.user._id
+    req.body.userDiscount = req.user.userDiscount
     const newDoc = await Model.create(req.body);
     res.status(201).json({ data: newDoc });
   });

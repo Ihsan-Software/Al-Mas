@@ -19,10 +19,6 @@ const contractSchema = new mongoose.Schema(
       required: [true, "user ID required"],
     },
     // contract details
-    overtimeCost: {
-        type: Number,
-        required: [true, "Overtime cost  required"],
-    },
     pricePaid: {
         type: Number,
         required: [true, "Amount paid required"],
@@ -110,6 +106,10 @@ const contractSchema = new mongoose.Schema(
    insuranceNotification:{
     type: Boolean,
     default: false
+   },
+   note:{
+    type: String,
+    default: ""
    }
 
 },

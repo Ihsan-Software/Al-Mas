@@ -41,6 +41,10 @@ const carSchema = new mongoose.Schema(
         type: Number,
         required: [true, "Daily price required"],
     },
+    overtimeCost: {
+        type: Number,
+        required: [true, "Overtime cost  required"],
+    },
     walkingCounter: {
         type: String,
         trim: true,
@@ -63,8 +67,8 @@ const carSchema = new mongoose.Schema(
     temporarilyDeleted:{
         type: Boolean,
         default: false
-    }
-
+    },
+    userDiscount: String
 },
 { timestamps: true }
 );

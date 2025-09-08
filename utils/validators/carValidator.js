@@ -28,6 +28,9 @@ exports.createCarValidator = [
   check("dailyPrice")
     .notEmpty()
     .withMessage("daily Price required"),
+  check("overtimeCost")
+    .notEmpty()
+    .withMessage("overtime Cost required"),
   check("walkingCounter")
     .notEmpty()
     .withMessage("Walking counter required"),
@@ -83,6 +86,10 @@ check("chassisNumber")
     .optional()
     .notEmpty()
     .withMessage("daily Price required"),
+  check("overtimeCost")
+    .optional()
+    .notEmpty()
+    .withMessage("overtime Cost required"),
 check("walkingCounter")
   .optional()
   .notEmpty()
