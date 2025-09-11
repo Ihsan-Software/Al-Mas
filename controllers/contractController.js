@@ -61,10 +61,10 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
     req.body.userID = req.user._id
     // calculate total price, priceAfterDiscount and pricePaid and RemainingPrice
     const multipliers = {
-    hour: 1 ,   // 1 hour = 1/24 of a day
-    day: 24,         // 1 day = 1 day
-    week: 168,        // 1 week = 7 days
-    month: 720       // approx 1 month = 30 days
+    hour: 1/24 ,   // 1 hour = 1/24 of a day
+    day: 1,         // 1 day = 1 day
+    week: 7,        // 1 week = 7 days
+    month: 30       // approx 1 month = 30 days
   };
 
   const unitMultiplier = multipliers[req.body.timeUnit.toLowerCase()];
@@ -128,11 +128,12 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
     const timeUnit = (req.body.timeUnit ?? contract.timeUnit).toLowerCase();
 
     const multipliers = {
-    hour: 1 ,   // 1 hour = 1/24 of a day
-    day: 24,         // 1 day = 1 day
-    week: 168,        // 1 week = 7 days
-    month: 720       // approx 1 month = 30 days
+    hour: 1/24 ,   // 1 hour = 1/24 of a day
+    day: 1,         // 1 day = 1 day
+    week: 7,        // 1 week = 7 days
+    month: 30       // approx 1 month = 30 days
   };
+
 
     const unitMultiplier = multipliers[timeUnit];
     if (unitMultiplier === undefined) {
