@@ -42,7 +42,7 @@ exports.deleteOldCarImage = deleteOldImage(Car, 'image', 'cars');
 // @desc    Get list of Car
 // @route   GET /car
 // @access  Private/ Admin, Manager
-exports.getCars = factory.getAll(Car,'','id name carModel color dailyPrice overtimeCost userDiscount carStatus ');
+exports.getCars = factory.getAll(Car,'','id name carModel color dailyPrice overtimeCost carStatus ');
 
 // @desc    Get specific Car by id
 // @route   GET /car/:id

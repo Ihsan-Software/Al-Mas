@@ -68,7 +68,6 @@ const carSchema = new mongoose.Schema(
         type: Boolean,
         default: false
     },
-    userDiscount: String
 },
 { timestamps: true }
 );

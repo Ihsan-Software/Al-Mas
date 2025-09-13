@@ -29,7 +29,13 @@ exports.getAll = (Model, populationOpt, selectedFields) =>
     }
 
     const documents = await query;
-
+    if(Model.modelName ==='Car'){
+      return res.status(200).json({
+        results: documents.length,
+        userDiscount:req.user.userDiscount,
+        data: documents,
+      });
+    }
     res.status(200).json({
       results: documents.length,
       data: documents,
@@ -75,7 +81,6 @@ exports.getOne = (Model, populationOpt, selectedFields) =>
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
     req.body.userID = req.user._id
-    req.body.userDiscount = req.user.userDiscount
     const newDoc = await Model.create(req.body);
     res.status(201).json({ data: newDoc });
   });
