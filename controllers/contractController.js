@@ -169,7 +169,24 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
 // @desc    Delete specific Contract
 // @route   DELETE /Contract/:id
 // @access  Private/ Admin, Manager
-exports.deleteContract = factory.deleteOne(Contract);
+exports.deleteContract = asyncHandler(async (req, res, next) => {
+
+  const contract = await Contract.findByIdAndDelete(req.params.id);
+
+  if (!contract) {
+    return next(new ApiError(`No contract for this id ${req.params.id}`, 404));
+  }
+
+  if (contract.carID) {
+    await Car.findByIdAndUpdate(
+      contract.carID,
+      { carStatus: "متاحة" },
+      { new: true, runValidators: true }
+    );
+  }
+
+  res.status(204).send();
+});
 
 
 // **** Contract CRUD ****
