@@ -1,6 +1,10 @@
 const path = require('path');
 const ejs = require('ejs');
+
 const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
 const fs = require("fs").promises;
 
 const chromium = require('chrome-aws-lambda');
@@ -89,9 +93,16 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
     });}
   // end calculate print time
   // calculate contract date and return date
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
     const now = new Date().toISOString();
-    req.body.contractDate = dayjs(now).format("YYYY-MM-DD HH:mm")
-    req.body.returnDate = dayjs(now).add(req.body.duration,req.body.timeUnit).format("YYYY-MM-DD HH:mm");
+    req.body.contractDate = dayjs(now)
+  .tz("Asia/Baghdad")
+  .format("YYYY-MM-DD hh:mm A").replace("AM", "ص").replace("PM", "م");
+  
+    req.body.returnDate = dayjs(now).add(req.body.duration,req.body.timeUnit).tz("Asia/Baghdad")
+  .format("YYYY-MM-DD hh:mm A")
+  .replace("AM","ص").replace("PM","م");
   // end calculate contract date and return date
 
     // update car status
