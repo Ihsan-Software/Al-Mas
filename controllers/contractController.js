@@ -230,8 +230,8 @@ exports.getContractUseName = asyncHandler(async (req, res, next) => {
 //Insurance التامينات
 exports.getInsurance = asyncHandler(async (req, res) => {
 
-  const elevenDaysAgo = dayjs().subtract(11, "day").format("YYYY-MM-DD HH:mm");
-
+  const elevenDaysAgo = dayjs().subtract(11, "day").tz("Asia/Baghdad")
+  .format("YYYY-MM-DD hh:mm A").replace("AM", "ص").replace("PM", "م");
   const result = await Contract.aggregate([
     {
       $match: {
@@ -277,7 +277,8 @@ exports.getInsurance = asyncHandler(async (req, res) => {
 
 exports.insuranceNotification = asyncHandler(async (req, res) => {
 
-  const elevenDaysAgo = dayjs().subtract(11, "day").format("YYYY-MM-DD HH:mm");
+  const elevenDaysAgo = dayjs().subtract(11, "day").tz("Asia/Baghdad")
+  .format("YYYY-MM-DD hh:mm A").replace("AM", "ص").replace("PM", "م");
 
   const result = await Contract.aggregate([
     {
