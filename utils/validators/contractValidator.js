@@ -49,7 +49,9 @@ exports.createContractValidator = [
   check("discount")
     .notEmpty()
     .withMessage("discount required"),
-
+  check("dailyPrice")
+    .notEmpty()
+    .withMessage("daily Price required"),
   check("printTime")
     .optional()
     .notEmpty()

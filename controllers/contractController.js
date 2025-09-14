@@ -21,6 +21,8 @@ const Contract = require("../models/contractModel");
 const Car = require("../models/carModel")
 const statistics = require("./statisticsController")
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 //  **** Admin CRUD ****
 
 // @desc    Get list of Contract
@@ -61,7 +63,6 @@ exports.getContract = factory.getOne(Contract,'',' -createdAt -updatedAt -__v');
 //  @access  Private/ Admin, Manager
 exports.createContract =  asyncHandler(async (req, res, next) => {
   const car = await Car.findById(req.body.carID)
-  req.body.dailyPrice = car.dailyPrice 
     req.body.userID = req.user._id
     // calculate total price, priceAfterDiscount and pricePaid and RemainingPrice
     const multipliers = {
@@ -93,8 +94,7 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
     });}
   // end calculate print time
   // calculate contract date and return date
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
+
     const now = new Date().toISOString();
     req.body.contractDate = dayjs(now)
   .tz("Asia/Baghdad")
@@ -127,49 +127,56 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
     delete req.body.dailyPrice;
   }
 
-  // Fetch existing contract first (to keep values like dailyPrice, pricePaid, etc.)
+  // Fetch existing contract first
   let contract = await Contract.findById(req.params.id);
   if (!contract) {
     return next(new ApiError(`No contract for this id ${req.params.id}`, 404));
   }
 
-  // --- 🔹 Recalculate logic if duration/timeUnit is updated ---
-  if (req.body.duration !== undefined || req.body.timeUnit !== undefined) {
-    const duration = req.body.duration ?? contract.duration;
-    const timeUnit = (req.body.timeUnit ?? contract.timeUnit).toLowerCase();
+  // --- 🔹 Determine values to use ---
+  const duration = req.body.duration ?? contract.duration;
+  const timeUnit = (req.body.timeUnit ?? contract.timeUnit).toLowerCase();
+  const dailyPrice = req.body.dailyPrice ?? contract.dailyPrice;
+  const discount = req.body.discount ?? contract.discount ?? 0;
+  const pricePaid = req.body.pricePaid ?? contract.pricePaid ?? 0;
 
-    const multipliers = {
-    hour: 1/24 ,   // 1 hour = 1/24 of a day
-    day: 1,         // 1 day = 1 day
-    week: 7,        // 1 week = 7 days
-    month: 30       // approx 1 month = 30 days
+  // --- 🔹 Validate timeUnit ---
+  const multipliers = {
+    hour: 1 / 24,
+    day: 1,
+    week: 7,
+    month: 30,
   };
-
-
-    const unitMultiplier = multipliers[timeUnit];
-    if (unitMultiplier === undefined) {
-      return next(new ApiError(`Invalid time unit: ${timeUnit}`, 400));
-    }
-
-    const dailyPrice = contract.dailyPrice; // keep existing dailyPrice
-    const discount = req.body.discount ?? contract.discount;
-    const pricePaid = req.body.pricePaid ?? contract.pricePaid;
-
-    const totalPrice = dailyPrice * duration * unitMultiplier;
-    const priceAfterDiscount = totalPrice - (totalPrice * (discount / 100));
-    const RemainingPrice = priceAfterDiscount - pricePaid;
-
-    // Calculate dates
-    const returnDate = dayjs(contract.contractDate).add(duration, timeUnit).format("YYYY-MM-DD HH:mm");
-
-    // Put into update body
-    req.body.totalPrice = totalPrice;
-    req.body.priceAfterDiscount = priceAfterDiscount;
-    req.body.RemainingPrice = RemainingPrice;
-    req.body.returnDate = returnDate;
+  const unitMultiplier = multipliers[timeUnit];
+  if (unitMultiplier === undefined) {
+    return next(new ApiError(`Invalid time unit: ${timeUnit}`, 400));
   }
 
-  // --- 🔹 Now update ---
+  // --- 🔹 Recalculate prices ---
+  const totalPrice = dailyPrice * duration * unitMultiplier;
+  const priceAfterDiscount = totalPrice - (totalPrice * (discount / 100));
+  const RemainingPrice = priceAfterDiscount - pricePaid;
+
+  // --- 🔹 Calculate returnDate in Baghdad 12-hour format with ص/م ---
+  const parsedContractDate = dayjs(contract.contractDate.replace("ص","AM").replace("م","PM"), "YYYY-MM-DD hh:mm A");
+  if (!parsedContractDate.isValid()) {
+    return next(new ApiError("Invalid contractDate format", 400));
+  }
+
+  const returnDate = parsedContractDate
+    .add(duration, timeUnit)
+    .tz("Asia/Baghdad")
+    .format("YYYY-MM-DD hh:mm A")
+    .replace("AM","ص")
+    .replace("PM","م");
+
+  // --- 🔹 Update body ---
+  req.body.totalPrice = totalPrice;
+  req.body.priceAfterDiscount = priceAfterDiscount;
+  req.body.RemainingPrice = RemainingPrice;
+  req.body.returnDate = returnDate;
+
+  // --- 🔹 Update contract ---
   contract = await Contract.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,

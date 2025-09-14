@@ -97,7 +97,8 @@ const contractSchema = new mongoose.Schema(
     default: false
    },
     dailyPrice: {
-        type: Number
+        type: Number,
+        required: [true, "Daily price required"],
     },
     isCarBack:{
     type: Boolean,
