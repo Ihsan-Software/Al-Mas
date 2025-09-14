@@ -147,8 +147,11 @@ carsByStatus.forEach(item => {
       },
     },
   ]);
-  const totalContractAfterDiscount =
-    contractTotalResult[0]?.totalPriceAfterDiscount + importsPrice[0].totalImportsPrice||importsPrice[0].totalImportsPrice+ 0;
+const totalImportsPrice = importsPrice[0]?.totalImportsPrice || 0;
+
+// Total contract after discount
+const totalContractAfterDiscount =
+  (contractTotalResult[0]?.totalPriceAfterDiscount || 0) + totalImportsPrice;
   // --- Final balance ---
   let balance;
     if (totalExportPrice > totalContractAfterDiscount) {
