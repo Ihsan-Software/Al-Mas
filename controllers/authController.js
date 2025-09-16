@@ -23,9 +23,9 @@ exports.signup = asyncHandler(async (req, res, next) => {
 
   // 2️⃣ Create User linked to UserInfo
   const user = await User.create({
-    name: req.body.name,
-    userInfoID: userInfo._id
-    });
+    ...req.body,
+    userInfoID: userInfo._id, 
+  });
 
   // 3️⃣ Generate token for User
   const token = createToken(user._id);
