@@ -52,6 +52,9 @@ exports.createContractValidator = [
   check("dailyPrice")
     .notEmpty()
     .withMessage("daily Price required"),
+  check("overtimeCost")
+    .notEmpty()
+    .withMessage("overtime Cost required"),
   check("printTime")
     .optional()
     .notEmpty()
@@ -112,7 +115,10 @@ exports.updateContractValidator = [
     .optional()
     .notEmpty()
     .withMessage("daily Price required"),
-
+  check("overtimeCost")
+    .optional()
+    .notEmpty()
+    .withMessage("overtime Cost required"),
   check("pricePaid")
     .optional()
     .notEmpty()

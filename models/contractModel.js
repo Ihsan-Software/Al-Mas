@@ -100,6 +100,10 @@ const contractSchema = new mongoose.Schema(
         type: Number,
         required: [true, "Daily price required"],
     },
+    overtimeCost: {
+        type: Number,
+        required: [true, "Overtime cost  required"],
+    },
     isCarBack:{
     type: Boolean,
     default: false
