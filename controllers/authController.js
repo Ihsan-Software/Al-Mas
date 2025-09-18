@@ -51,6 +51,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new ApiError("User account not found for this email", 404));
   }
+  if (user.temporarilyDeleted) {
+    return next(new ApiError("You cannot log in with this account, please check with your administrator.", 401));
+  }
   // 3) generate token
   const token = createToken(user._id);
 
@@ -109,7 +112,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
       );
     }
   }
-
+    if (currentUser.temporarilyDeleted) {
+    return next(new ApiError("You cannot use your account, please check with your administrator.", 401));
+    } 
   req.user = currentUser;
   next();
 });

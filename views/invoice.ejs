@@ -73,6 +73,9 @@
     .table1 img {
       width: 22%;
     }
+    .username{
+      text-align: left;
+    }
 
   </style>
 </head>
@@ -112,13 +115,16 @@
           <td colspan="1"><p>استلمت من السيد/ة: <%= contract.tenantID.name %></p></td>
         </tr>
         <tr>
-          <td colspan="1"><p>مبلغ قدره(Amount of):  <%= contract.pricePaid %> دينار عراقي</p></td>
+          <td colspan="1"><p>مبلغ قدره:  <%= contract.pricePaid %> دينار عراقي</p></td>
         </tr>
         <tr>
-          <td colspan="1"><p>وذالك عن ايجار مركبة(This is for renting a vehicle) ( <%= contract.carID.name %>) المرقمة (<%= contract.carID.carNumber %>)</p></td>
+          <td colspan="1"><p>وذالك عن ايجار مركبة ( <%= contract.carID.name %>) المرقمة (<%= contract.carID.carNumber %>)</p></td>
         </tr>
         <tr>
-          <td colspan="1"><p>الملاحظات(Notes): <%= contract.note %></p></td>
+          <td colspan="1"><p>الملاحظات: <%= contract.note %></p></td>
+        </tr>
+         <tr>
+          <td colspan="1" class="username"><p>اسم وتوقيع المستلم</p><p><%= contract.userID.name %></p></td>
         </tr>
       </tbody>
     </table>
