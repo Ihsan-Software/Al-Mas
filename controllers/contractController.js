@@ -95,12 +95,12 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
   // end calculate print time
   // calculate contract date and return date
 
-    const now = new Date().toISOString();
-    req.body.contractDate = dayjs(now)
-  .tz("Asia/Baghdad")
-  .format("YYYY-MM-DD hh:mm A").replace("AM", "ص").replace("PM", "م");
-  
-    req.body.returnDate = dayjs(now).add(req.body.duration,req.body.timeUnit).tz("Asia/Baghdad")
+const now = dayjs().tz("Asia/Baghdad");
+
+req.body.contractDate = now.format("YYYY-MM-DD hh:mm A")
+  .replace("AM","ص").replace("PM","م");
+
+req.body.returnDate = now.add(req.body.duration, req.body.timeUnit)
   .format("YYYY-MM-DD hh:mm A")
   .replace("AM","ص").replace("PM","م");
   // end calculate contract date and return date
