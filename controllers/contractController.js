@@ -32,7 +32,11 @@ exports.getContracts = asyncHandler(async (req, res, next) => {
 const { returnDate } = req.query;
   let filter = {};
 
-  const currentDate = dayjs().format("YYYY-MM-DD HH:mm");
+  const currentDate = dayjs()
+    .tz("Asia/Baghdad")
+    .format("YYYY-MM-DD hh:mm A")
+    .replace("AM", "ص")
+    .replace("PM", "م");
 
   if (returnDate === "true") {
     filter.isCarBack = false
