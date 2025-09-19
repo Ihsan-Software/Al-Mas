@@ -89,20 +89,30 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
   req.body.RemainingPrice = req.body.priceAfterDiscount - req.body.pricePaid 
   // end calculate total price, priceAfterDiscount and pricePaid and RemainingPrice
 
-  // calculate print time
-  if(!req.body.printTime){
-    req.body.printTime = new Date().toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });}
-  // end calculate print time
+
   // calculate contract date and return date
 
-const now = dayjs().tz("Asia/Baghdad");
+  const now = dayjs().tz("Asia/Baghdad");
 
-req.body.contractDate = now.format("YYYY-MM-DD hh:mm A")
-  .replace("AM","ص").replace("PM","م");
+  if (req.body.printTime) {
+    const [time, meridiem] = req.body.printTime.split(" "); // ["1:37", "PM"]
+    let [hours, minutes] = time.split(":").map(Number);
+
+    if (meridiem.toUpperCase() === "PM" && hours !== 12) hours += 12;
+    if (meridiem.toUpperCase() === "AM" && hours === 12) hours = 0;
+
+    req.body.contractDate = now
+      .hour(hours)
+      .minute(minutes)
+      .second(0)
+      .millisecond(0)
+      .format("YYYY-MM-DD hh:mm A")
+      .replace("AM","ص").replace("PM","م");
+  } else {
+    req.body.contractDate = now
+      .format("YYYY-MM-DD hh:mm A")
+      .replace("AM","ص").replace("PM","م");
+  }
 
 req.body.returnDate = now.add(req.body.duration, req.body.timeUnit)
   .format("YYYY-MM-DD hh:mm A")

@@ -39,6 +39,7 @@ const contractSchema = new mongoose.Schema(
     printTime: {
         type: String,
         trim: true,
+        default:""
     },
     totalPrice: {
         type: Number,
