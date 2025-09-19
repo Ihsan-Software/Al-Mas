@@ -112,7 +112,12 @@ carsByStatus.forEach(item => {
 });
 
   //imports
-  const currentDate = dayjs().format("YYYY-MM-DD HH:mm");
+  const currentDate = dayjs()
+      .tz("Asia/Baghdad")
+      .format("YYYY-MM-DD hh:mm A")
+      .replace("AM", "ص")
+      .replace("PM", "م");
+    console.log(currentDate)
   const contractsOverTime = await Contract.find({returnDate:{ $lte: currentDate },isCarBack:false}).countDocuments();
 
   // --- Other counts ---
