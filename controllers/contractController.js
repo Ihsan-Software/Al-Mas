@@ -151,8 +151,8 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
   const duration = req.body.duration ?? contract.duration;
   const timeUnit = (req.body.timeUnit ?? contract.timeUnit).toLowerCase();
   const dailyPrice = req.body.dailyPrice ?? contract.dailyPrice;
-  const discount = req.body.discount ?? contract.discount ?? 0;
-  const pricePaid = req.body.pricePaid ?? contract.pricePaid ?? 0;
+  const discount = req.body.discount ?? contract.discount;
+  const pricePaid = req.body.pricePaid ?? contract.pricePaid;
 
   // --- 🔹 Validate timeUnit ---
   const multipliers = {
@@ -166,23 +166,48 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
     return next(new ApiError(`Invalid time unit: ${timeUnit}`, 400));
   }
 
-  // --- 🔹 Recalculate prices ---
-  const totalPrice = dailyPrice * duration * unitMultiplier;
-  const priceAfterDiscount = totalPrice - (totalPrice * (discount / 100));
-  const RemainingPrice = priceAfterDiscount - pricePaid;
+  // --- 🔹 Parse contractDate from DB ---
+  let parsedContractDate = dayjs(
+    contract.contractDate.replace("ص", "AM").replace("م", "PM"),
+    "YYYY-MM-DD hh:mm A"
+  );
 
-  // --- 🔹 Calculate returnDate in Baghdad 12-hour format with ص/م ---
-  const parsedContractDate = dayjs(contract.contractDate.replace("ص","AM").replace("م","PM"), "YYYY-MM-DD hh:mm A");
   if (!parsedContractDate.isValid()) {
     return next(new ApiError("Invalid contractDate format", 400));
   }
 
+  // --- 🔹 If printTime sent → update only the hours/minutes ---
+  if (req.body.printTime) {
+    const [time, meridiem] = req.body.printTime.split(" "); // ["9:00", "PM"]
+    let [hours, minutes] = time.split(":").map(Number);
+
+    if (meridiem.toUpperCase() === "PM" && hours !== 12) hours += 12;
+    if (meridiem.toUpperCase() === "AM" && hours === 12) hours = 0;
+
+    parsedContractDate = parsedContractDate
+      .hour(hours)
+      .minute(minutes)
+      .second(0)
+      .millisecond(0);
+
+    req.body.contractDate = parsedContractDate
+      .format("YYYY-MM-DD hh:mm A")
+      .replace("AM", "ص")
+      .replace("PM", "م");
+  }
+
+  // --- 🔹 Recalculate prices ---
+  const totalPrice = dailyPrice * duration * unitMultiplier;
+  const priceAfterDiscount = totalPrice - totalPrice * (discount / 100);
+  const RemainingPrice = priceAfterDiscount - pricePaid;
+
+  // --- 🔹 Calculate returnDate based on possibly updated contractDate ---
   const returnDate = parsedContractDate
     .add(duration, timeUnit)
     .tz("Asia/Baghdad")
     .format("YYYY-MM-DD hh:mm A")
-    .replace("AM","ص")
-    .replace("PM","م");
+    .replace("AM", "ص")
+    .replace("PM", "م");
 
   // --- 🔹 Update body ---
   req.body.totalPrice = totalPrice;
@@ -198,6 +223,7 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ data: contract });
 });
+
 // @desc    Delete specific Contract
 // @route   DELETE /Contract/:id
 // @access  Private/ Admin, Manager
