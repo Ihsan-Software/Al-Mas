@@ -201,10 +201,9 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
   const priceAfterDiscount = totalPrice - totalPrice * (discount / 100);
   const RemainingPrice = priceAfterDiscount - pricePaid;
 
-  // --- 🔹 Calculate returnDate based on possibly updated contractDate ---
+  // --- 🔹 Calculate returnDate (بدون tz حتى ما يزيد +3 ساعات) ---
   const returnDate = parsedContractDate
     .add(duration, timeUnit)
-    .tz("Asia/Baghdad")
     .format("YYYY-MM-DD hh:mm A")
     .replace("AM", "ص")
     .replace("PM", "م");
@@ -223,6 +222,7 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ data: contract });
 });
+
 
 // @desc    Delete specific Contract
 // @route   DELETE /Contract/:id
