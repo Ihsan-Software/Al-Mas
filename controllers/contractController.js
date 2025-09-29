@@ -40,10 +40,11 @@ const { returnDate } = req.query;
 
   if (returnDate === "true") {
     filter.isCarBack = false
-    filter.returnDate = { $lte: currentDate };
-  } else if (returnDate === "false") {
-    filter.returnDate = { $gt: currentDate };
-  }
+    //filter.returnDate = { $lte: currentDate };
+  } 
+  //else if (returnDate === "false") {
+    //filter.returnDate = { $gt: currentDate };
+  //}
 
   const contracts = await Contract.find(filter).populate([
     { path: 'carID', select: 'name'},
