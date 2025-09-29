@@ -21,7 +21,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         const personalImageFileName = `tenant-${uuidv4()}-${Date.now()}-personalImage.webp`;
 
         await sharp(req.files.personalImage[0].buffer)
-        .resize(2000, 1333)
+        .resize(600, 600)
         .toFormat("webp")
         .webp({ quality: 90 })
         .toFile(`uploads/tenant/${personalImageFileName}`);
@@ -34,7 +34,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         const personalDocumentsImagRequiredFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagRequired.jpeg`;
 
         await sharp(req.files.personalDocumentsImagRequired[0].buffer)
-        .resize(2000, 1333)
+        .resize(2200, 3000)
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`uploads/tenant/${personalDocumentsImagRequiredFileName}`);
@@ -47,7 +47,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         const personalDocumentsImagOptionalFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagOptional.jpeg`;
 
         await sharp(req.files.personalDocumentsImagOptional[0].buffer)
-        .resize(2000, 1333)
+        .resize(2200, 3000)
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`uploads/tenant/${personalDocumentsImagOptionalFileName}`);
