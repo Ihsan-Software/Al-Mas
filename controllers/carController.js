@@ -22,7 +22,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
     }
     const filename = `car-${uuidv4()}-${Date.now()}.webp`;
     await sharp(req.file.buffer)
-        .resize(600, 600)
+        .resize(2480, 3508, {fit: "cover"})
         .toFormat("webp")
         .webp({ quality: 90 })
         .toFile(`uploads/cars/${filename}`);
