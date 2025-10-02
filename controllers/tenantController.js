@@ -31,11 +31,11 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
     }
     //2- Image processing for images
     if (req.files.personalDocumentsImagRequired) {
-        const personalDocumentsImagRequiredFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagRequired.jpeg`;
+        const personalDocumentsImagRequiredFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagRequired.webp`;
 
         await sharp(req.files.personalDocumentsImagRequired[0].buffer)
         .resize(2480, 3508, {fit: "cover"})
-        .toFormat("jpeg")
+        .toFormat("webp")
         .jpeg({ quality: 90 })
         .toFile(`uploads/tenant/${personalDocumentsImagRequiredFileName}`);
 
@@ -44,11 +44,11 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
 
     }
     if (req.files.personalDocumentsImagOptional) {
-        const personalDocumentsImagOptionalFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagOptional.jpeg`;
+        const personalDocumentsImagOptionalFileName = `tenant-${uuidv4()}-${Date.now()}-personalDocumentsImagOptional.webp`;
 
         await sharp(req.files.personalDocumentsImagOptional[0].buffer)
         .resize(2480, 3508, {fit: "cover"})
-        .toFormat("jpeg")
+        .toFormat("webp")
         .jpeg({ quality: 90 })
         .toFile(`uploads/tenant/${personalDocumentsImagOptionalFileName}`);
 
