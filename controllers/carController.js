@@ -20,6 +20,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
     if (!req.file) {
         return next();
     }
+    
     const filename = `car-${uuidv4()}-${Date.now()}.webp`;
     await sharp(req.file.buffer)
         .resize(2480, 3508, {fit: "cover"})
