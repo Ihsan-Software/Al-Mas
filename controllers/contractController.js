@@ -430,7 +430,6 @@ exports.sendHtmlPage = asyncHandler(async (req, res, next) => {
 });
 
 
-
 exports.sendEjsFile = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   let newQuery
