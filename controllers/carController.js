@@ -22,11 +22,15 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
     }
     
     const filename = `car-${uuidv4()}-${Date.now()}.webp`;
+    const uploadDir = process.env.RAILWAY_VOLUME_MOUNT_PATH 
+                        ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, "cars")
+                        : path.join(__dirname, "../uploads/cars");
     await sharp(req.file.buffer)
         .resize(2480, 3508, {fit: "cover"})
         .toFormat("webp")
         .webp({ quality: 90 })
-        .toFile(`uploads/cars/${filename}`);
+              .toFile(path.join(uploadDir, filename));
+
 
     // save image in db
     req.body.image = filename;

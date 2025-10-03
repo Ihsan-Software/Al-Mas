@@ -15,7 +15,9 @@ const deleteOldImage  = require("../middlewares/deleteOldImage");
 const { query } = require("express-validator");
 
 exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
-
+   const uploadDir = process.env.RAILWAY_VOLUME_MOUNT_PATH 
+                    ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, "tenant")
+                    : path.join(__dirname, "../uploads/tenant");
   //1- Image processing for personalImage
     if (req.files.personalImage) {
         const personalImageFileName = `tenant-${uuidv4()}-${Date.now()}-personalImage.webp`;
@@ -24,7 +26,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         .resize(600, 600)
         .toFormat("webp")
         .webp({ quality: 90 })
-        .toFile(`uploads/tenant/${personalImageFileName}`);
+        .toFile(path.join(uploadDir, personalImageFileName));
 
         // Save image into our db
         req.body.personalImage = personalImageFileName;
@@ -37,7 +39,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         .resize(2480, 3508, {fit: "cover"})
         .toFormat("webp")
         .jpeg({ quality: 90 })
-        .toFile(`uploads/tenant/${personalDocumentsImagRequiredFileName}`);
+        .toFile(path.join(uploadDir, personalDocumentsImagRequiredFileName));
 
         // Save image into our db
         req.body.personalDocumentsImagRequired = personalDocumentsImagRequiredFileName;
@@ -50,7 +52,7 @@ exports.resizeTenantImages = asyncHandler(async (req, res, next) => {
         .resize(2480, 3508, {fit: "cover"})
         .toFormat("webp")
         .jpeg({ quality: 90 })
-        .toFile(`uploads/tenant/${personalDocumentsImagOptionalFileName}`);
+        .toFile(path.join(uploadDir, personalDocumentsImagOptionalFileName));
 
         // Save image into our db
         req.body.personalDocumentsImagOptional = personalDocumentsImagOptionalFileName;
