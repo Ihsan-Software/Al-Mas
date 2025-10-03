@@ -15,7 +15,7 @@ const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const deleteOldImage  = require("../middlewares/deleteOldImage");
 const { query } = require("express-validator");
 
-// use buffer from Memory Storage
+// use buffer from Memory Storage, user server storage
 exports.resizeImage = asyncHandler(async (req, res, next) => {
     if (!req.file) {
         return next();
