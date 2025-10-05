@@ -15,6 +15,7 @@ exports.getAll = (Model, populationOpt, selectedFields) =>
     } 
     else if(Model.modelName ==='Car' && req.query.carStatus!==undefined){
       filter.carStatus =  { $regex: `^${req.query.carStatus.trim()}$`, $options: "i" };
+      filter.temporarilyDeleted = false
     }
     else {
       // hasCar NOT sent → use temporarilyDeleted filter
