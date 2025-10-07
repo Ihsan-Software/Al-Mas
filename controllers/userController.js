@@ -162,7 +162,7 @@ const user = await User.findById(req.params.id);
     return next(new ApiError(`No userInfo found for this user`, 404));
   }
 
-  userInfo.password = await bcrypt.hash(req.body.newPassword, 12);
+  userInfo.password = req.body.newPassword;
 
   await userInfo.save();
     res.status(200).json({ data: user });
