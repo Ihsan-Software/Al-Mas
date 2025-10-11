@@ -49,7 +49,7 @@ const { returnDate } = req.query;
   const contracts = await Contract.find(filter).populate([
     { path: 'carID', select: 'name'},
     { path: 'tenantID', select: 'name'},
-  ]).select('contractDate');
+  ]).select('contractDate returnDate');
 
   res.status(200).json({
     results: contracts.length,
@@ -121,7 +121,7 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
   // end calculate contract date and return date
 
     // update car status
-    await Car.findByIdAndUpdate(req.body.carID, { carStatus: 'مؤجرة' });
+    await Car.findByIdAndUpdate(req.body.carID, { carStatus: 'مؤجرة',  walkingCounter: req.body.walkingCounter },{ new: true });
 
     // create contract number
     const contractCount = await Contract.countDocuments();
@@ -135,10 +135,12 @@ exports.createContract =  asyncHandler(async (req, res, next) => {
 // @route   PUT /Contract/:id
 // @access  Private/ Admin, Manager
 exports.updateContract = asyncHandler(async (req, res, next) => {
-  const isAdmin = req.user.userInfoID.role === "admin";
+  
+  const role = req.user.userInfoID.role;
+  const isAdminOrSuper = role === "admin" || role === "superEmployee";
 
-  // If not admin → remove dailyPrice from update data
-  if (!isAdmin && req.body.dailyPrice !== undefined) {
+  // If not admin or superEmployee → remove dailyPrice from update data
+  if (!isAdminOrSuper && req.body.dailyPrice !== undefined) {
     delete req.body.dailyPrice;
   }
 

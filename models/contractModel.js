@@ -116,8 +116,21 @@ const contractSchema = new mongoose.Schema(
    note:{
     type: String,
     default: ""
-   }
-
+   },
+    walkingCounter: {
+        type: String,
+        trim: true,
+        required: [true, " Walking counter required"],
+    },
+    fuel: {
+        type: String,
+        trim: true,
+        required: [true, " Fuel required"],
+    },
+    notified:{
+    type: Boolean,
+    default: false
+   },
 },
 { timestamps: true }
 );

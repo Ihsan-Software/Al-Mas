@@ -10,7 +10,8 @@ const factory = require("./handlersFactory");
 // @desc    Get list of Exports
 // @route   GET /exports
 // @access  Private / Admin, Manager
-exports.getExports = factory.getAll(Export,'','-carID');
+exports.getExports = factory.getAll(Export,{ path: 'carID', select: 'carNumber' },'_id userID title details notes price');
+// @desc    Get specific Import by ID
 
 // @desc    Get specific Export by ID
 // @route   GET /exports/:id

@@ -228,7 +228,7 @@
           <td><%= contract.carID.carType %></td>
           <td><%= contract.carID.color %></td>
           <td><%= contract.carID.carModel %></td>
-          <td><%= contract.carID.walkingCounter %></td>
+          <td><%= contract.walkingCounter %></td>
           <td><%= contract.overtimeCost %> IQD</td>
         </tr>
 
@@ -252,7 +252,7 @@
           <th colspan="2">ملاحظات العودة<br>Return notes</th>
         </tr>
         <tr>
-          <td>60%</td>
+          <td><%= contract.fuel%>%</td>
           <td colspan="2"><%= contract.duration %> <%= contract.timeUnit %></td>
           <td colspan="2"><%= contract.note %></td>
           <td colspan="2">لم يتم تسجيل عودة المركبة</td>

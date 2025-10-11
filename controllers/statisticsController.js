@@ -139,7 +139,7 @@ carsByStatus.forEach(item => {
     {
       $group: {
         _id: null,
-        totalPriceAfterDiscount: { $sum: "$priceAfterDiscount" },
+        totalPriceAfterDiscount: { $sum: "$pricePaid" },
       },
     },
   ]);
@@ -199,7 +199,7 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
     },
     {
       $addFields: {
-        totalContractPrice: { $sum: "$contracts.priceAfterDiscount" },
+        totalContractPrice: { $sum: "$contracts.pricePaid" },
         contractsCount: { $size: "$contracts" }
       }
     },

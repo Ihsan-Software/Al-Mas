@@ -28,7 +28,7 @@ const router = express.Router();
 
 // FOR ADMIN
 router.use(auth.protect);
-router.use(auth.allowedTo("admin","employee"));
+router.use(auth.allowedTo("admin", "superEmployee", "employee"));
 
 router.route("/")
   .get(getTenants)

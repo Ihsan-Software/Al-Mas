@@ -83,6 +83,9 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     if (!user) {
         return next(new ApiError(`No user for this id ${req.params.id}`, 404));
     }
+    if(user.id == '68e00e789e2883abd527f3e8' && req.user.id!=user.id){
+        return next(new ApiError(`You can't update this user until you are a admin`, 404));
+    }
 
     // Update User fields
     if (req.body.name) user.name = req.body.name;

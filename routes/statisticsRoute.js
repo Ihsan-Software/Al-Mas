@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.use(auth.protect);
 router.route("/carStatistics").get(auth.allowedTo("admin"),getCarStatistics)
-router.use(auth.allowedTo("admin","employee"));
+router.use(auth.allowedTo("admin", "superEmployee", "employee"));
 
 // FOR admin and employee
 router.route("/").get(getStatistics)

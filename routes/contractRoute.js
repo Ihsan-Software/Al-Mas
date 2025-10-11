@@ -42,7 +42,7 @@ router.route("/htmlPage/:id")
 
 router.use(auth.protect);
 router.route('/getImportsUseDate').get(auth.allowedTo("admin"), getImportsPricesByDate);
-router.use(auth.allowedTo("admin","employee"));
+router.use(auth.allowedTo("admin", "superEmployee", "employee"));
 
 router.route("/")
 .get(getContracts)

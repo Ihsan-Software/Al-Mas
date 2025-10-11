@@ -10,7 +10,7 @@ const factory = require("./handlersFactory");
 // @desc    Get list of Import
 // @route   GET /Import
 // @access  Private / Admin, Manager
-exports.getImports = factory.getAll(ImportModel,'','-carID');
+exports.getImports = factory.getAll(ImportModel, { path: 'carID', select: 'carNumber' },'_id userID title details notes price');
 // @desc    Get specific Import by ID
 // @route   GET /Import/:id
 // @access  Private / Admin, Manager

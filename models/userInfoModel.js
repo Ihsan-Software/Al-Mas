@@ -21,7 +21,7 @@ const userInfoSchema = new mongoose.Schema(
     phone: String,
     role: {
         type: String,
-        enum: ["admin", "employee"],
+        enum: ["admin", "superEmployee", "employee"],
         default: "employee",
     }
 },

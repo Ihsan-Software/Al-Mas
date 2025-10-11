@@ -87,6 +87,12 @@ exports.createContractValidator = [
     .optional()
     .notEmpty()
     .withMessage("address required"),
+    check("walkingCounter")
+    .notEmpty()
+    .withMessage("Walking counter required"),
+    check("fuel")
+    .notEmpty()
+    .withMessage("fuel required"),
 
   validatorMiddleware,
 ];
@@ -173,6 +179,14 @@ exports.updateContractValidator = [
     .optional()
     .notEmpty()
     .withMessage("address required"),
+  check("walkingCounter")
+  .optional()
+  .notEmpty()
+  .withMessage("Walking counter required"),
+  check("fuel")
+  .optional()
+  .notEmpty()
+  .withMessage("fuel required"),
   validatorMiddleware,
 ];
 ;
