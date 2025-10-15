@@ -15,27 +15,31 @@ cron.schedule('*/30 * * * * *', async () => {
       .replace('AM', 'ص')
       .replace('PM', 'م');
 
-    console.log(`time ⏱️  for test is  : ${nowBaghdad}`);
+    //console.log(`time ⏱️  for test is  : ${nowBaghdad}`);
 
     const expiredContracts = await Contract.find({
       returnDate: { $lte: nowBaghdad },
       notified: { $ne: true }
     });
-
      if (expiredContracts.length > 0) {
+      global.broadcastWS({
+        type: 'expiredContracts',
+        data: expiredContracts
+      });
 
-      global.io.emit('expiredContracts', expiredContracts);
-
-      console.log(`number of contract which is ending is: ${expiredContracts.length} `);
-      console.log(expiredContracts)
+      //console.log(`number of contract which is ending is: ${expiredContracts.length} `);
+      //console.log(expiredContracts)
       for (const contract of expiredContracts) {
         contract.notified = true;
         await contract.save();
       }
     } else {
-      console.log('no contract was ended ');
-      global.io.emit('expiredContracts', expiredContracts);
 
+      //console.log('no contract was ended ');
+      global.broadcastWS({
+        type: 'expiredContracts',
+        data: expiredContracts
+      });
     }
   } catch (err) {
     console.error(' خطأ أثناء فحص العقود المنتهية:', err);

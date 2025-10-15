@@ -84,11 +84,16 @@ exports.getStatistics = asyncHandler(async (req, res, next) => {
   // --- Cars grouped by status ---
   const carsByStatus = await Car.aggregate([
     {
+      $match: {
+        temporarilyDeleted: false
+      }
+    },
+    {
       $group: {
         _id: "$carStatus",
-        count: { $sum: 1 },
-      },
-    },
+        count: { $sum: 1 }
+      }
+    }
   ]);
   const statusMap = {
     "متاحة": "Available",
@@ -117,7 +122,7 @@ carsByStatus.forEach(item => {
       .format("YYYY-MM-DD hh:mm A")
       .replace("AM", "ص")
       .replace("PM", "م");
-    console.log(currentDate)
+    //console.log(currentDate)
   const contractsOverTime = await Contract.find({returnDate:{ $lte: currentDate },isCarBack:false}).countDocuments();
 
   // --- Other counts ---
