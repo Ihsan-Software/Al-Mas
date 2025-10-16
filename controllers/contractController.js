@@ -45,19 +45,28 @@ const { returnDate } = req.query;
   //else if (returnDate === "false") {
     //filter.returnDate = { $gt: currentDate };
   //}
-    const expiredContracts = await Contract.find({
+    const expiredContractsNumber = await Contract.find({
       returnDate: { $lte: currentDate },
       isCarBack: { $ne: true }
     }).countDocuments();
-    
+
+    expiredContractsAfterUpdated = await Contract.updateMany(
+  {
+    returnDate: { $lte: currentDate },
+    isCarBack: { $ne: true }
+  },
+  {
+    $set: { isContractExpired: true }
+  }
+);
   const contracts = await Contract.find(filter).populate([
     { path: 'carID', select: 'name carNumber'},
     { path: 'tenantID', select: 'name'},
-  ]).select('contractDate returnDate isCarBack');
+  ]).select('contractDate returnDate isContractExpired isCarBack');
 
   res.status(200).json({
     results: contracts.length,
-    expiredContracts:expiredContracts,
+    expiredContracts:expiredContractsNumber,
     data: contracts,
   });
 
