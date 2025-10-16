@@ -259,6 +259,7 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
         _id: 0,
         carID: "$_id",
         carName: "$name",
+        carNumber: "$carNumber",
         contractsCount: 1,
         totalContractPrice: 1,
         importsCount: 1,
