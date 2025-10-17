@@ -230,7 +230,9 @@ exports.updateContract = asyncHandler(async (req, res, next) => {
   req.body.priceAfterDiscount = priceAfterDiscount;
   req.body.RemainingPrice = RemainingPrice;
   req.body.returnDate = returnDate;
-
+  if(returnDate > contract.returnDate && contract.isContractExpired==true){
+    req.body.isContractExpired = false
+  }
   // --- 🔹 Update contract ---
   contract = await Contract.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
