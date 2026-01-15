@@ -129,7 +129,30 @@ carsByStatus.forEach(item => {
   const contractsCount = await Contract.countDocuments();
   const exportsCount = await Export.countDocuments();
   const tenantsCount = await Tenant.countDocuments();
+  // update reset balance
+  const startOfYear = dayjs()
+  .tz("Asia/Baghdad")
+  .startOf("year")
+  .utc()
+  .toDate();
+
+const endOfYear = dayjs()
+  .tz("Asia/Baghdad")
+  .endOf("year")
+  .utc()
+  .toDate();
+
+  
    const exportTotalResult = await Export.aggregate([
+
+    {
+      $match: {
+        createdAt: {
+          $gte: startOfYear,
+          $lte: endOfYear,
+        },
+      },
+    },
     {
       $group: {
         _id: null,
@@ -142,6 +165,14 @@ carsByStatus.forEach(item => {
    // --- Total contract priceAfterDiscount ---
   const contractTotalResult = await Contract.aggregate([
     {
+      $match: {
+        createdAt: {
+          $gte: startOfYear,
+          $lte: endOfYear,
+        },
+      },
+    },
+    {
       $group: {
         _id: null,
         totalPriceAfterDiscount: { $sum: "$pricePaid" },
@@ -150,6 +181,14 @@ carsByStatus.forEach(item => {
   ]);
 
   const importsPrice = await ImportModel.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: startOfYear,
+          $lte: endOfYear,
+        },
+      },
+    },
     {
       $group: {
         _id: null,
@@ -163,12 +202,13 @@ const totalImportsPrice = importsPrice[0]?.totalImportsPrice || 0;
 const totalContractAfterDiscount =
   (contractTotalResult[0]?.totalPriceAfterDiscount || 0) + totalImportsPrice;
   // --- Final balance ---
-  let balance;
+  let balance = 0;
     if (totalExportPrice > totalContractAfterDiscount) {
       balance = totalExportPrice - totalContractAfterDiscount;
     } else if (totalContractAfterDiscount > totalExportPrice) {
       balance = totalContractAfterDiscount - totalExportPrice;
-    } 
+    }
+
 
     res.status(200).json({
     status: "success",
