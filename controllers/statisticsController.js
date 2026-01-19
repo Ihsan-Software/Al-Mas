@@ -232,32 +232,39 @@ const totalContractAfterDiscount =
 });
 
 exports.getCarStatistics = asyncHandler(async (req, res, next) => {
+
   const startOfYear = dayjs()
-  .tz("Asia/Baghdad")
-  .startOf("year")
-  .utc()
-  .toDate();
+    .tz("Asia/Baghdad")
+    .startOf("year")
+    .utc()
+    .toDate();
 
   const endOfYear = dayjs()
-  .tz("Asia/Baghdad")
-  .endOf("year")
-  .utc()
-  .toDate();
+    .tz("Asia/Baghdad")
+    .endOf("year")
+    .utc()
+    .toDate();
+
   const result = await Car.aggregate([
-      {
-      $match: {
-        createdAt: {
-          $gte: startOfYear,
-          $lte: endOfYear,
-        },
-      },
-    },
-    // 1) Lookup contracts per car
+
+    /* ============== CONTRACTS ============== */
     {
       $lookup: {
         from: "contracts",
-        localField: "_id",
-        foreignField: "carID",
+        let: { carId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$carID", "$$carId"] },
+                  { $gte: ["$createdAt", startOfYear] },
+                  { $lte: ["$createdAt", endOfYear] }
+                ]
+              }
+            }
+          }
+        ],
         as: "contracts"
       }
     },
@@ -268,12 +275,24 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
       }
     },
 
-    // 2) Lookup imports per car
+    /* ============== IMPORTS ============== */
     {
       $lookup: {
         from: "imports",
-        localField: "_id",
-        foreignField: "carID",
+        let: { carId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$carID", "$$carId"] },
+                  { $gte: ["$createdAt", startOfYear] },
+                  { $lte: ["$createdAt", endOfYear] }
+                ]
+              }
+            }
+          }
+        ],
         as: "imports"
       }
     },
@@ -284,12 +303,24 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
       }
     },
 
-    // 3) Lookup exports per car
+    /* ============== EXPORTS ============== */
     {
       $lookup: {
         from: "exports",
-        localField: "_id",
-        foreignField: "carID",
+        let: { carId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$carID", "$$carId"] },
+                  { $gte: ["$createdAt", startOfYear] },
+                  { $lte: ["$createdAt", endOfYear] }
+                ]
+              }
+            }
+          }
+        ],
         as: "exports"
       }
     },
@@ -300,7 +331,7 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
       }
     },
 
-    // 4) Calculate net total (contracts + imports - exports)
+    /* ============== NET PROFIT ============== */
     {
       $addFields: {
         netProfit: {
@@ -312,20 +343,25 @@ exports.getCarStatistics = asyncHandler(async (req, res, next) => {
       }
     },
 
-    // 5) Shape the output
+    /* ============== OUTPUT (نفس القديم تمامًا) ============== */
     {
       $project: {
         _id: 0,
+
+        totalContractPrice: 1,
+        contractsCount: 1,
+
+        totalImportPrice: 1,
+        importsCount: 1,
+
+        totalExportPrice: 1,
+        exportsCount: 1,
+
+        netProfit: 1,
+
         carID: "$_id",
         carName: "$name",
-        carNumber: "$carNumber",
-        contractsCount: 1,
-        totalContractPrice: 1,
-        importsCount: 1,
-        totalImportPrice: 1,
-        exportsCount: 1,
-        totalExportPrice: 1,
-        netProfit: 1
+        carNumber: "$carNumber"
       }
     }
   ]);
