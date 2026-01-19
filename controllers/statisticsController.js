@@ -232,7 +232,26 @@ const totalContractAfterDiscount =
 });
 
 exports.getCarStatistics = asyncHandler(async (req, res, next) => {
+  const startOfYear = dayjs()
+  .tz("Asia/Baghdad")
+  .startOf("year")
+  .utc()
+  .toDate();
+
+  const endOfYear = dayjs()
+  .tz("Asia/Baghdad")
+  .endOf("year")
+  .utc()
+  .toDate();
   const result = await Car.aggregate([
+      {
+      $match: {
+        createdAt: {
+          $gte: startOfYear,
+          $lte: endOfYear,
+        },
+      },
+    },
     // 1) Lookup contracts per car
     {
       $lookup: {
